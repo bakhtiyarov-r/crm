@@ -31,20 +31,19 @@ Route::group(['middleware' => 'jwt.auth'], function() {
 	Route::get('users/show', 'UserController@index');
 	Route::post('user/create', 'UserController@store');
 
-	Route::post('project/create', 'ProjectController@store');
-	Route::get('project/show', 'ProjectController@index');
-	Route::get('project/item-{id}', 'ProjectController@show');
-	Route::post('project/edit-item-{id}', 'ProjectController@update');
-	Route::delete('project/item-{id}', 'ProjectController@destroy');
+	// get /projects - index
+	// get /projects/create - create
+	// post /projects - store
+	// get /projects/{project}/edit - edit 
+	// put /projects/{project} - update 
+	// delete /projects/{project} - destroy
 
-	Route::get('project/item-{id}/tasks', 'ProjectController@showTasks');
-	Route::post('project/item-{id}/tasks/create', 'TaskController@store');
+	Route::resource('projects', ProjectController::class);
 
-	Route::get('task/show', 'TaskController@index');
-	Route::get('task/item-{id}', 'TaskController@show');
-	Route::post('task/edit-item-{id}', 'TaskController@update');
-	Route::delete('task/item-{id}', 'TaskController@destroy');
-	Route::post('task/create', 'TaskController@store');
+	Route::get('projects/{project}/tasks', 'ProjectController@showTasks');
+	Route::post('projects/{project}/tasks', 'TaskController@store');
+	
+	Route::resource('tasks', TaskController::class);
 
 });
 

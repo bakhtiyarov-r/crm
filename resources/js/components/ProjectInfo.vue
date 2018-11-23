@@ -106,7 +106,7 @@
   	methods: {
   		editProject() {
   			var app = this;
-  			this.axios.post('project/edit-item-' + this.$route.params.id, {
+  			this.axios.put('projects/' + this.$route.params.id, {
 	  			title: app.project.title,
 	  			description: app.project.description,
 	  			opened: app.project.opened,
@@ -122,7 +122,7 @@
   		},
 	  	getProject() {
   			var app = this;
-	  		this.axios.get('project/item-' + this.$route.params.id).then(response => {
+	  		this.axios.get('projects/' + this.$route.params.id).then(response => {
   	  			app.project = response.data.data;
             let res = response.data.data.executors;
             res.forEach(function(item, i, res){
@@ -148,7 +148,7 @@
       },
 	  	deleteProject() {
   			var app = this;
-	  		this.axios.delete('project/item-' + this.$route.params.id).then(response => {
+	  		this.axios.delete('projects/' + this.$route.params.id).then(response => {
 	  			window.location = response.data.redirect;
             }).catch(error => {
                 app.error = true;

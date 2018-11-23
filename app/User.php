@@ -28,6 +28,15 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function getCreatedAtAttribute($value) {
+        return \Carbon\Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
     public function profile()
     {
         return $this->hasOne('App\UsersProfile');
@@ -57,5 +66,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Task');
     }
+
+    
 
 }

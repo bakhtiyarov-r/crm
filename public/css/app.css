@@ -10961,6 +10961,14 @@ input[type="checkbox"]:checked:before {
   padding: 0.75rem 0;
 }
 
+.tasks_item.done {
+  opacity: .4;
+}
+
+.tasks_item.red {
+  color: red;
+}
+
 .user_name {
   color: #999999;
   font-family: "PT Sans";

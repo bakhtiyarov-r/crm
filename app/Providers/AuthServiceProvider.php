@@ -5,6 +5,10 @@ use App\Company;
 use App\Policies\CompanyPolicy;
 use App\User;
 use App\Policies\UserPolicy;
+use App\Project;
+use App\Policies\ProjectPolicy;
+use App\Task;
+use App\Policies\TaskPolicy;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -18,6 +22,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Company::class => CompanyPolicy::class,
+        Project::class => ProjectPolicy::class,
+        Task::class => TaskPolicy::class,
         User::class => UserPolicy::class
     ];
 

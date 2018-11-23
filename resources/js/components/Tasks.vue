@@ -18,24 +18,19 @@
 									{{getCountItems()}}
 								</span>
 							</span>
-							<span class="status_item" @click="status_filter = 'new'" v-bind:class="{ active: status_filter == 'new'}">Новые 
+							<span class="status_item" @click="status_filter = 'opened'" v-bind:class="{ active: status_filter == 'opened'}">Открытые 
 								<span class="status_count" >
-									{{getCountItems('new')}}
+									{{getCountItems('opened')}}
 								</span>
 							</span>
-							<span class="status_item" @click="status_filter = 'onthe_go'" v-bind:class="{ active: status_filter == 'onthe_go'}">В работе 
+							<span class="status_item" @click="status_filter = 'immediate'" v-bind:class="{ active: status_filter == 'immediate'}">Срочные 
 								<span class="status_count">
-									{{this.getCountItems('onthe_go')}}
+									{{this.getCountItems('immediate')}}
 								</span>
 							</span>
-							<span class="status_item"  @click="status_filter = 'under_consideration'" v-bind:class="{ active: status_filter == 'under_consideration'}">На рассмотрении 
+							<span class="status_item" @click="status_filter = 'closed'" v-bind:class="{ active: status_filter == 'closed'}">Выполнены 
 								<span class="status_count">
-									{{this.getCountItems('under_consideration')}}
-								</span>
-							</span>
-							<span class="status_item" @click="status_filter = 'done'" v-bind:class="{ active: status_filter == 'done'}">Выполнены 
-								<span class="status_count">
-									{{this.getCountItems('done')}}
+									{{this.getCountItems('closed')}}
 								</span>
 							</span>
 							<span class="status_item"  @click="status_filter = 'canceled'" v-bind:class="{ active: status_filter == 'canceled'}">Отменены 
@@ -51,7 +46,6 @@
 						</div>
 					</div>
 					<div class="col-md-2 col-lg-1">
-						
 					</div>
 				</div>	
 			</div>		
@@ -65,15 +59,10 @@
 						</div>
 					</div>
 					<div class="col-lg-9">
-						<div class="filter_checkbox">
-							<input type="checkbox" id="personal" value="personal" v-model="personal_chkd"/><label for="personal"> Персональное</label>
-							<input type="checkbox" id="night" value="night" v-model="night_chkd"/><label for="night"> Ночное</label>
-							<input type="checkbox" id="immediate" value="immediate" v-model="immediate_chkd"/><label for="immediate"> Срочное</label>	            
-						</div>     	
 						<div class="filter_name">
 							<select v-model="task_author"> 
 								<option value="all">Все</option>
-								<option v-for="author in userList" v-bind:value="author.user.name + ' ' + author.user.profile.surname">{{ author.user.name }}&nbsp;{{ author.user.profile.surname }}</option>
+								<option v-for="author in userList" v-bind:value="author.id">{{ author.name }}&nbsp;{{ author.profile.surname }}</option>
 							</select>
 						</div>
 					</div>  	
@@ -97,12 +86,12 @@
 						Дата создания
 					</div>
 				</div>
-				<div class="row tasks_item" v-for="task in taskList" :key="task.id">
+				<div class="row tasks_item" v-for="task in taskList" v-bind:class="{ done: !task.opened, red: task.immediate}" :key="task.id">
 					<div class="col-lg-2">
 						{{task.opened | status}}
 					</div>
 					<div class="col-lg-4">
-						<a :href="'/tasks/task-id-' + task.id">{{task.title}}</a>
+						<a :href="'/tasks/' + task.id">{{task.title}}</a>
 					</div>
 					<div class="col-lg-3">
 						{{task.deadline}}
@@ -131,12 +120,9 @@
             errors: {},
             add_task_success: false,
             isHidden: false,
-            task_author: this.$auth.user().name + ' ' + this.$auth.user().profile.surname,
+            task_author: this.$auth.user().id,
             task_name_filter: '',
-            personal_chkd: '',
-            night_chkd: '',
-            immediate_chkd: '',
-            status_filter: ''
+            status_filter: 'opened'
   		}
   	},
   	mounted() {
@@ -145,18 +131,23 @@
   	methods: {
 	  	getTasks() {
   			var app = this;
-	  		this.axios.get('task/show').then(response => {
+	  		this.axios.get('tasks').then(response => {
 	  			app.tasks = response.data.data;
+	  			//console.log(app.tasks)
             }).catch(error => {
                 app.error = true;
                 app.errors = error.data;
+                
             });  
 	  	},
         getCountItems(count) {
         	return this.tasks.filter(elem => {
         		if (!count) {
         			return true;
-        		} else {
+        		} else if (count == 'closed') {
+        			return !elem.opened;
+        		}
+        		else {
         			return elem[count] == true; 
         		} 
         	}).length
@@ -171,37 +162,20 @@
             		if(app.task_author == 'all') {
             			return true;
             		} else {
-            			return elem.user.name + ' ' + elem.user.profile.surname == app.task_author;
-            		}
-            	})
-            	.filter(elem => {
-            		if(!app.personal_chkd) {
-            			return true;
-            		} else {
-            			console.log(app.personal_chkd)
-            			//console.log(app.checked_status.includes(elem[app.checked_status]))
-            			return elem.personal == app.personal_chkd;
-            		}
-            	})
-            	.filter(elem => {
-            		if(!app.night_chkd) {
-            			return true;
-            		} else {
-            			return elem.night == app.night_chkd;
-            		}
-            	})
-            	.filter(elem => {
-            		if(!app.immediate_chkd) {
-            			return true;
-            		} else {
-            			return elem.immediate == app.immediate_chkd;
+            			let arr = elem.executors;
+            			return arr.some(item => {
+            				return item.id == app.task_author
+            			})
             		}
             	})
             	.filter(elem => {
             		if(!app.status_filter) {
             			return true;
-            		} else {
-            			return elem[app.status_filter] == true;
+            		} else if(app.status_filter == 'closed') {
+            				return !elem.opened;
+            		}
+            		else {
+            			return elem[app.status_filter];
             		}
             	})
         },
@@ -209,15 +183,19 @@
         	var app = this;
         	var pr = app.tasks;
         	var result = [];
+			
+		    for (var i = 0; i < pr.length; i++) {
+		    	var str = pr[i].executors; 
 
-			nextInput:
-			    for (var i = 0; i < pr.length; i++) {
-			    	var str = pr[i].user.id; // для каждого элемента
-			    	for (var j = 0; j < result.length; j++) { // ищем, был ли он уже?
-			        	if (result[j].user.id == str) continue nextInput; // если да, то следующий
+		    	nextInput:
+	    		for (var k = 0; k < str.length; k++) {
+	    			var exec = str[k].id;
+	    			for (var j = 0; j < result.length; j++) {
+			        	if (result[j].id == exec) continue nextInput; 
 			    	}
-			    	result.push(pr[i]);
-			    }
+			    	result.push(str[k]);
+	    		}
+		    }
 			return result;
         }
     },

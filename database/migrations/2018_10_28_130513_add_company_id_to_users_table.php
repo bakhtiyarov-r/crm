@@ -15,7 +15,7 @@ class AddCompanyIdToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedInteger('company_id')->after('name')->nullable();
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
     }
 
@@ -27,7 +27,7 @@ class AddCompanyIdToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('company_id');
+            $table->dropForeign('users_company_id_foreign');
         });
     }
 }

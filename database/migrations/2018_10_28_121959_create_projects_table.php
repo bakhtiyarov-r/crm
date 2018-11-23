@@ -23,8 +23,7 @@ class CreateProjectsTable extends Migration
             $table->boolean('closed')->nullable();
             $table->timestamps();
 
-            $table->foreign('company_id')->references('id')->on('companies');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
         });
     }
 

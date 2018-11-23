@@ -1139,7 +1139,7 @@ module.exports = (function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(12);
-module.exports = __webpack_require__(83);
+module.exports = __webpack_require__(85);
 
 
 /***/ }),
@@ -1177,6 +1177,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__components_Register___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13__components_Register__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__components_Login__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__components_Login___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14__components_Login__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__components_NotFound__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__components_NotFound___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_15__components_NotFound__);
 
 
 
@@ -1185,6 +1187,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]);
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_3_vue_axios___default.a, __WEBPACK_IMPORTED_MODULE_2_axios___default.a);
 __WEBPACK_IMPORTED_MODULE_2_axios___default.a.defaults.baseURL = 'http://mysite.local/api';
+
 
 
 
@@ -1219,7 +1222,7 @@ var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
       auth: true
     }
   }, {
-    path: '/projects/project-id-:id',
+    path: '/projects/:id',
     name: 'project-id',
     component: __WEBPACK_IMPORTED_MODULE_8__components_ProjectItem___default.a,
     meta: {
@@ -1233,7 +1236,7 @@ var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
       auth: true
     }
   }, {
-    path: '/tasks/task-id-:id',
+    path: '/tasks/:id',
     name: 'task-id',
     component: __WEBPACK_IMPORTED_MODULE_10__components_TaskItem___default.a,
     meta: {
@@ -1264,21 +1267,17 @@ var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
     meta: {
       auth: false
     }
-    // ,
-    // { path: '/404',
-    //   component: NotFound
-    // },  
-    // { path: '*',
-    //   redirect: '/404'
-    // }, 
+  }, { path: '/404',
+    name: '404',
+    component: __WEBPACK_IMPORTED_MODULE_15__components_NotFound___default.a
   }]
 });
 
 __WEBPACK_IMPORTED_MODULE_0_vue___default.a.router = router;
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__webpack_require__(76), {
-  auth: __webpack_require__(80),
-  http: __webpack_require__(81),
-  router: __webpack_require__(82)
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__webpack_require__(78), {
+  auth: __webpack_require__(82),
+  http: __webpack_require__(83),
+  router: __webpack_require__(84)
 });
 __WEBPACK_IMPORTED_MODULE_4__components_App___default.a.router = __WEBPACK_IMPORTED_MODULE_0_vue___default.a.router;
 new __WEBPACK_IMPORTED_MODULE_0_vue___default.a(__WEBPACK_IMPORTED_MODULE_4__components_App___default.a).$mount('#app');
@@ -17882,7 +17881,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this = this;
 
             var app = this;
-            this.axios.post('project/create', {
+            this.axios.post('projects', {
                 title: app.title,
                 description: app.description,
                 responsible: app.responsible
@@ -17896,7 +17895,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         getProjects: function getProjects() {
             var app = this;
-            this.axios.get('project/show').then(function (response) {
+            this.axios.get('projects').then(function (response) {
                 app.projects = response.data.data;
             }).catch(function (error) {
                 app.error = true;
@@ -18098,11 +18097,9 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-lg-3" }, [
-                  _c(
-                    "a",
-                    { attrs: { href: "/projects/project-id-" + project.id } },
-                    [_vm._v(_vm._s(project.title))]
-                  )
+                  _c("a", { attrs: { href: "/projects/" + project.id } }, [
+                    _vm._v(_vm._s(project.title))
+                  ])
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-lg-7" }, [
@@ -18489,11 +18486,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   methods: {
     getProject: function getProject() {
       var app = this;
-      this.axios.get('project/item-' + this.$route.params.id).then(function (response) {
+      this.axios.get('projects/' + this.$route.params.id).then(function (response) {
         app.project = response.data.data;
       }).catch(function (error) {
         app.error = true;
         app.errors = error.data;
+        //             if (error.response.status === 403) {
+        // 	this.$router.push({name: '404'});
+        // }
       });
     }
   },
@@ -18669,7 +18669,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var _this = this;
 
       var app = this;
-      this.axios.post('project/edit-item-' + this.$route.params.id, {
+      this.axios.put('projects/' + this.$route.params.id, {
         title: app.project.title,
         description: app.project.description,
         opened: app.project.opened,
@@ -18685,7 +18685,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     getProject: function getProject() {
       var app = this;
-      this.axios.get('project/item-' + this.$route.params.id).then(function (response) {
+      this.axios.get('projects/' + this.$route.params.id).then(function (response) {
         app.project = response.data.data;
         var res = response.data.data.executors;
         res.forEach(function (item, i, res) {
@@ -18711,7 +18711,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     deleteProject: function deleteProject() {
       var app = this;
-      this.axios.delete('project/item-' + this.$route.params.id).then(function (response) {
+      this.axios.delete('projects/' + this.$route.params.id).then(function (response) {
         window.location = response.data.redirect;
       }).catch(function (error) {
         app.error = true;
@@ -19294,6 +19294,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -19310,7 +19311,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             errors: {},
             add_task_success: false,
             isHidden: false,
-            project_author: this.$auth.user().name + ' ' + this.$auth.user().profile.surname,
+            project_author: this.$auth.user().id,
             task_name_filter: '',
             personal_chkd: '',
             night_chkd: '',
@@ -19328,7 +19329,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this = this;
 
             var app = this;
-            this.axios.post('project/item-' + this.$route.params.id + '/tasks/create', {
+            this.axios.post('projects/' + this.$route.params.id + '/tasks', {
                 title: app.title,
                 description: app.description,
                 deadline: app.deadline,
@@ -19345,7 +19346,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         getTasks: function getTasks() {
             var app = this;
-            this.axios.get('project/item-' + this.$route.params.id + '/tasks').then(function (response) {
+            this.axios.get('projects/' + this.$route.params.id + '/tasks').then(function (response) {
                 app.tasks = response.data.data;
             }).catch(function (error) {
                 app.error = true;
@@ -19373,7 +19374,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     if (app.project_author == 'all') {
                         return true;
                     } else {
-                        return elem.user.name + ' ' + elem.user.profile.surname == app.project_author;
+                        return elem.user.id == app.project_author;
                     }
                 });
             }
@@ -19604,12 +19605,7 @@ var render = function() {
                   _vm._l(_vm.userList, function(author) {
                     return _c(
                       "option",
-                      {
-                        domProps: {
-                          value:
-                            author.user.name + " " + author.user.profile.surname
-                        }
-                      },
+                      { domProps: { value: author.user.id } },
                       [
                         _vm._v(
                           _vm._s(author.user.name) +
@@ -19648,29 +19644,37 @@ var render = function() {
           _vm._m(0),
           _vm._v(" "),
           _vm._l(_vm.taskList, function(task) {
-            return _c("div", { key: task.id, staticClass: "row tasks_item" }, [
-              _c("div", { staticClass: "col-lg-2" }, [
-                _vm._v(
-                  "\n\t\t\t\t\t\t" +
-                    _vm._s(_vm._f("status")(task.opened)) +
-                    "\n\t\t\t\t\t"
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-lg-5" }, [
-                _c("a", { attrs: { href: "/tasks/task-id-" + task.id } }, [
-                  _vm._v(_vm._s(task.title))
+            return _c(
+              "div",
+              {
+                key: task.id,
+                staticClass: "row tasks_item",
+                class: { done: !task.opened, red: task.immediate }
+              },
+              [
+                _c("div", { staticClass: "col-lg-2" }, [
+                  _vm._v(
+                    "\n\t\t\t\t\t\t" +
+                      _vm._s(_vm._f("status")(task.opened)) +
+                      "\n\t\t\t\t\t"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-lg-5" }, [
+                  _c("a", { attrs: { href: "/tasks/" + task.id } }, [
+                    _vm._v(_vm._s(task.title))
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-lg-3" }),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-lg-2" }, [
+                  _vm._v(
+                    "\n\t\t\t\t\t\t" + _vm._s(task.deadline) + "\n\t\t\t\t\t"
+                  )
                 ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-lg-3" }),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-lg-2" }, [
-                _vm._v(
-                  "\n\t\t\t\t\t\t" + _vm._s(task.deadline) + "\n\t\t\t\t\t"
-                )
-              ])
-            ])
+              ]
+            )
           })
         ],
         2
@@ -19821,67 +19825,73 @@ var render = function() {
             _c(
               "div",
               { staticClass: "form-group", staticStyle: { width: "100%" } },
-              _vm._l(_vm.users, function(user) {
-                return _c(
-                  "div",
-                  {
-                    key: user.id,
-                    staticStyle: {
-                      display: "flex",
-                      width: "200px",
-                      "justify-content": "space-between",
-                      "align-items": "center"
-                    }
-                  },
-                  [
-                    _c("label", { attrs: { for: user.id } }, [
-                      _vm._v(
-                        _vm._s(user.name) + " " + _vm._s(user.profile.surname)
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.responsible,
-                          expression: "responsible"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: { type: "checkbox", id: user.id },
-                      domProps: {
-                        value: user.id,
-                        checked: Array.isArray(_vm.responsible)
-                          ? _vm._i(_vm.responsible, user.id) > -1
-                          : _vm.responsible
-                      },
-                      on: {
-                        change: function($event) {
-                          var $$a = _vm.responsible,
-                            $$el = $event.target,
-                            $$c = $$el.checked ? true : false
-                          if (Array.isArray($$a)) {
-                            var $$v = user.id,
-                              $$i = _vm._i($$a, $$v)
-                            if ($$el.checked) {
-                              $$i < 0 && (_vm.responsible = $$a.concat([$$v]))
+              [
+                _vm._v(
+                  "\n                \tОтветственные:\n                \t"
+                ),
+                _vm._l(_vm.users, function(user) {
+                  return _c(
+                    "div",
+                    {
+                      key: user.id,
+                      staticStyle: {
+                        display: "flex",
+                        width: "200px",
+                        "justify-content": "space-between",
+                        "align-items": "center"
+                      }
+                    },
+                    [
+                      _c("label", { attrs: { for: user.id } }, [
+                        _vm._v(
+                          _vm._s(user.name) + " " + _vm._s(user.profile.surname)
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.responsible,
+                            expression: "responsible"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "checkbox", id: user.id },
+                        domProps: {
+                          value: user.id,
+                          checked: Array.isArray(_vm.responsible)
+                            ? _vm._i(_vm.responsible, user.id) > -1
+                            : _vm.responsible
+                        },
+                        on: {
+                          change: function($event) {
+                            var $$a = _vm.responsible,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = user.id,
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 && (_vm.responsible = $$a.concat([$$v]))
+                              } else {
+                                $$i > -1 &&
+                                  (_vm.responsible = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
+                              }
                             } else {
-                              $$i > -1 &&
-                                (_vm.responsible = $$a
-                                  .slice(0, $$i)
-                                  .concat($$a.slice($$i + 1)))
+                              _vm.responsible = $$c
                             }
-                          } else {
-                            _vm.responsible = $$c
                           }
                         }
-                      }
-                    })
-                  ]
-                )
-              })
+                      })
+                    ]
+                  )
+                })
+              ],
+              2
             ),
             _vm._v(" "),
             _c("div", { staticClass: "form-group form-group_half-width" }, [
@@ -20118,7 +20128,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("span", { staticClass: "status_item" }, [
-      _vm._v("Комментарии "),
+      _vm._v("Документы "),
       _c("span", { staticClass: "status_count" }, [_vm._v("0")])
     ])
   }
@@ -20293,125 +20303,102 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            tasks: [],
-            title: 'Новая задача',
-            description: '',
-            deadline: '',
-            immediate: false,
-            drafts: false,
-            error: false,
-            errors: {},
-            add_task_success: false,
-            isHidden: false,
-            task_author: this.$auth.user().name + ' ' + this.$auth.user().profile.surname,
-            task_name_filter: '',
-            personal_chkd: '',
-            night_chkd: '',
-            immediate_chkd: '',
-            status_filter: ''
-        };
-    },
-    mounted: function mounted() {
-        this.getTasks();
-    },
+  data: function data() {
+    return {
+      tasks: [],
+      title: 'Новая задача',
+      description: '',
+      deadline: '',
+      immediate: false,
+      drafts: false,
+      error: false,
+      errors: {},
+      add_task_success: false,
+      isHidden: false,
+      task_author: this.$auth.user().id,
+      task_name_filter: '',
+      status_filter: 'opened'
+    };
+  },
+  mounted: function mounted() {
+    this.getTasks();
+  },
 
-    methods: {
-        getTasks: function getTasks() {
-            var app = this;
-            this.axios.get('task/show').then(function (response) {
-                app.tasks = response.data.data;
-            }).catch(function (error) {
-                app.error = true;
-                app.errors = error.data;
-            });
-        },
-        getCountItems: function getCountItems(count) {
-            return this.tasks.filter(function (elem) {
-                if (!count) {
-                    return true;
-                } else {
-                    return elem[count] == true;
-                }
-            }).length;
-        }
+  methods: {
+    getTasks: function getTasks() {
+      var app = this;
+      this.axios.get('tasks').then(function (response) {
+        app.tasks = response.data.data;
+        //console.log(app.tasks)
+      }).catch(function (error) {
+        app.error = true;
+        app.errors = error.data;
+      });
     },
-    computed: {
-        taskList: function taskList() {
-            var app = this;
-            var taskName = this.task_name_filter.toLowerCase();
-            return this.tasks.filter(function (elem) {
-                return elem.title.toLowerCase().indexOf(taskName) > -1;
-            }).filter(function (elem) {
-                if (app.task_author == 'all') {
-                    return true;
-                } else {
-                    return elem.user.name + ' ' + elem.user.profile.surname == app.task_author;
-                }
-            }).filter(function (elem) {
-                if (!app.personal_chkd) {
-                    return true;
-                } else {
-                    console.log(app.personal_chkd);
-                    //console.log(app.checked_status.includes(elem[app.checked_status]))
-                    return elem.personal == app.personal_chkd;
-                }
-            }).filter(function (elem) {
-                if (!app.night_chkd) {
-                    return true;
-                } else {
-                    return elem.night == app.night_chkd;
-                }
-            }).filter(function (elem) {
-                if (!app.immediate_chkd) {
-                    return true;
-                } else {
-                    return elem.immediate == app.immediate_chkd;
-                }
-            }).filter(function (elem) {
-                if (!app.status_filter) {
-                    return true;
-                } else {
-                    return elem[app.status_filter] == true;
-                }
-            });
-        },
-        userList: function userList() {
-            var app = this;
-            var pr = app.tasks;
-            var result = [];
-
-            nextInput: for (var i = 0; i < pr.length; i++) {
-                var str = pr[i].user.id; // для каждого элемента
-                for (var j = 0; j < result.length; j++) {
-                    // ищем, был ли он уже?
-                    if (result[j].user.id == str) continue nextInput; // если да, то следующий
-                }
-                result.push(pr[i]);
-            }
-            return result;
+    getCountItems: function getCountItems(count) {
+      return this.tasks.filter(function (elem) {
+        if (!count) {
+          return true;
+        } else if (count == 'closed') {
+          return !elem.opened;
+        } else {
+          return elem[count] == true;
         }
-    },
-    filters: {
-        status: function status(value) {
-            if (!value) return 'Закрыто';
-            return 'Открыто';
-        }
+      }).length;
     }
+  },
+  computed: {
+    taskList: function taskList() {
+      var app = this;
+      var taskName = this.task_name_filter.toLowerCase();
+      return this.tasks.filter(function (elem) {
+        return elem.title.toLowerCase().indexOf(taskName) > -1;
+      }).filter(function (elem) {
+        if (app.task_author == 'all') {
+          return true;
+        } else {
+          var arr = elem.executors;
+          return arr.some(function (item) {
+            return item.id == app.task_author;
+          });
+        }
+      }).filter(function (elem) {
+        if (!app.status_filter) {
+          return true;
+        } else if (app.status_filter == 'closed') {
+          return !elem.opened;
+        } else {
+          return elem[app.status_filter];
+        }
+      });
+    },
+    userList: function userList() {
+      var app = this;
+      var pr = app.tasks;
+      var result = [];
+
+      for (var i = 0; i < pr.length; i++) {
+        var str = pr[i].executors;
+
+        nextInput: for (var k = 0; k < str.length; k++) {
+          var exec = str[k].id;
+          for (var j = 0; j < result.length; j++) {
+            if (result[j].id == exec) continue nextInput;
+          }
+          result.push(str[k]);
+        }
+      }
+      return result;
+    }
+  },
+  filters: {
+    status: function status(value) {
+      if (!value) return 'Закрыто';
+      return 'Открыто';
+    }
+  }
 });
 
 /***/ }),
@@ -20457,19 +20444,19 @@ var render = function() {
                 "span",
                 {
                   staticClass: "status_item",
-                  class: { active: _vm.status_filter == "new" },
+                  class: { active: _vm.status_filter == "opened" },
                   on: {
                     click: function($event) {
-                      _vm.status_filter = "new"
+                      _vm.status_filter = "opened"
                     }
                   }
                 },
                 [
-                  _vm._v("Новые \n\t\t\t\t\t\t\t\t"),
+                  _vm._v("Открытые \n\t\t\t\t\t\t\t\t"),
                   _c("span", { staticClass: "status_count" }, [
                     _vm._v(
                       "\n\t\t\t\t\t\t\t\t\t" +
-                        _vm._s(_vm.getCountItems("new")) +
+                        _vm._s(_vm.getCountItems("opened")) +
                         "\n\t\t\t\t\t\t\t\t"
                     )
                   ])
@@ -20480,19 +20467,19 @@ var render = function() {
                 "span",
                 {
                   staticClass: "status_item",
-                  class: { active: _vm.status_filter == "onthe_go" },
+                  class: { active: _vm.status_filter == "immediate" },
                   on: {
                     click: function($event) {
-                      _vm.status_filter = "onthe_go"
+                      _vm.status_filter = "immediate"
                     }
                   }
                 },
                 [
-                  _vm._v("В работе \n\t\t\t\t\t\t\t\t"),
+                  _vm._v("Срочные \n\t\t\t\t\t\t\t\t"),
                   _c("span", { staticClass: "status_count" }, [
                     _vm._v(
                       "\n\t\t\t\t\t\t\t\t\t" +
-                        _vm._s(this.getCountItems("onthe_go")) +
+                        _vm._s(this.getCountItems("immediate")) +
                         "\n\t\t\t\t\t\t\t\t"
                     )
                   ])
@@ -20503,33 +20490,10 @@ var render = function() {
                 "span",
                 {
                   staticClass: "status_item",
-                  class: { active: _vm.status_filter == "under_consideration" },
+                  class: { active: _vm.status_filter == "closed" },
                   on: {
                     click: function($event) {
-                      _vm.status_filter = "under_consideration"
-                    }
-                  }
-                },
-                [
-                  _vm._v("На рассмотрении \n\t\t\t\t\t\t\t\t"),
-                  _c("span", { staticClass: "status_count" }, [
-                    _vm._v(
-                      "\n\t\t\t\t\t\t\t\t\t" +
-                        _vm._s(this.getCountItems("under_consideration")) +
-                        "\n\t\t\t\t\t\t\t\t"
-                    )
-                  ])
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "span",
-                {
-                  staticClass: "status_item",
-                  class: { active: _vm.status_filter == "done" },
-                  on: {
-                    click: function($event) {
-                      _vm.status_filter = "done"
+                      _vm.status_filter = "closed"
                     }
                   }
                 },
@@ -20538,7 +20502,7 @@ var render = function() {
                   _c("span", { staticClass: "status_count" }, [
                     _vm._v(
                       "\n\t\t\t\t\t\t\t\t\t" +
-                        _vm._s(this.getCountItems("done")) +
+                        _vm._s(this.getCountItems("closed")) +
                         "\n\t\t\t\t\t\t\t\t"
                     )
                   ])
@@ -20631,131 +20595,6 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "col-lg-9" }, [
-            _c("div", { staticClass: "filter_checkbox" }, [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.personal_chkd,
-                    expression: "personal_chkd"
-                  }
-                ],
-                attrs: { type: "checkbox", id: "personal", value: "personal" },
-                domProps: {
-                  checked: Array.isArray(_vm.personal_chkd)
-                    ? _vm._i(_vm.personal_chkd, "personal") > -1
-                    : _vm.personal_chkd
-                },
-                on: {
-                  change: function($event) {
-                    var $$a = _vm.personal_chkd,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = "personal",
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.personal_chkd = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.personal_chkd = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
-                      }
-                    } else {
-                      _vm.personal_chkd = $$c
-                    }
-                  }
-                }
-              }),
-              _c("label", { attrs: { for: "personal" } }, [
-                _vm._v(" Персональное")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.night_chkd,
-                    expression: "night_chkd"
-                  }
-                ],
-                attrs: { type: "checkbox", id: "night", value: "night" },
-                domProps: {
-                  checked: Array.isArray(_vm.night_chkd)
-                    ? _vm._i(_vm.night_chkd, "night") > -1
-                    : _vm.night_chkd
-                },
-                on: {
-                  change: function($event) {
-                    var $$a = _vm.night_chkd,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = "night",
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.night_chkd = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.night_chkd = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
-                      }
-                    } else {
-                      _vm.night_chkd = $$c
-                    }
-                  }
-                }
-              }),
-              _c("label", { attrs: { for: "night" } }, [_vm._v(" Ночное")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.immediate_chkd,
-                    expression: "immediate_chkd"
-                  }
-                ],
-                attrs: {
-                  type: "checkbox",
-                  id: "immediate",
-                  value: "immediate"
-                },
-                domProps: {
-                  checked: Array.isArray(_vm.immediate_chkd)
-                    ? _vm._i(_vm.immediate_chkd, "immediate") > -1
-                    : _vm.immediate_chkd
-                },
-                on: {
-                  change: function($event) {
-                    var $$a = _vm.immediate_chkd,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = "immediate",
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.immediate_chkd = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.immediate_chkd = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
-                      }
-                    } else {
-                      _vm.immediate_chkd = $$c
-                    }
-                  }
-                }
-              }),
-              _c("label", { attrs: { for: "immediate" } }, [_vm._v(" Срочное")])
-            ]),
-            _vm._v(" "),
             _c("div", { staticClass: "filter_name" }, [
               _c(
                 "select",
@@ -20788,22 +20627,13 @@ var render = function() {
                   _c("option", { attrs: { value: "all" } }, [_vm._v("Все")]),
                   _vm._v(" "),
                   _vm._l(_vm.userList, function(author) {
-                    return _c(
-                      "option",
-                      {
-                        domProps: {
-                          value:
-                            author.user.name + " " + author.user.profile.surname
-                        }
-                      },
-                      [
-                        _vm._v(
-                          _vm._s(author.user.name) +
-                            " " +
-                            _vm._s(author.user.profile.surname)
-                        )
-                      ]
-                    )
+                    return _c("option", { domProps: { value: author.id } }, [
+                      _vm._v(
+                        _vm._s(author.name) +
+                          " " +
+                          _vm._s(author.profile.surname)
+                      )
+                    ])
                   })
                 ],
                 2
@@ -20822,33 +20652,41 @@ var render = function() {
           _vm._m(1),
           _vm._v(" "),
           _vm._l(_vm.taskList, function(task) {
-            return _c("div", { key: task.id, staticClass: "row tasks_item" }, [
-              _c("div", { staticClass: "col-lg-2" }, [
-                _vm._v(
-                  "\n\t\t\t\t\t\t" +
-                    _vm._s(_vm._f("status")(task.opened)) +
-                    "\n\t\t\t\t\t"
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-lg-4" }, [
-                _c("a", { attrs: { href: "/tasks/task-id-" + task.id } }, [
-                  _vm._v(_vm._s(task.title))
+            return _c(
+              "div",
+              {
+                key: task.id,
+                staticClass: "row tasks_item",
+                class: { done: !task.opened, red: task.immediate }
+              },
+              [
+                _c("div", { staticClass: "col-lg-2" }, [
+                  _vm._v(
+                    "\n\t\t\t\t\t\t" +
+                      _vm._s(_vm._f("status")(task.opened)) +
+                      "\n\t\t\t\t\t"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-lg-4" }, [
+                  _c("a", { attrs: { href: "/tasks/" + task.id } }, [
+                    _vm._v(_vm._s(task.title))
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-lg-3" }, [
+                  _vm._v(
+                    "\n\t\t\t\t\t\t" + _vm._s(task.deadline) + "\n\t\t\t\t\t"
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-lg-3" }, [
+                  _vm._v(
+                    "\n\t\t\t\t\t\t" + _vm._s(task.created_at) + "\n\t\t\t\t\t"
+                  )
                 ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-lg-3" }, [
-                _vm._v(
-                  "\n\t\t\t\t\t\t" + _vm._s(task.deadline) + "\n\t\t\t\t\t"
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-lg-3" }, [
-                _vm._v(
-                  "\n\t\t\t\t\t\t" + _vm._s(task.created_at) + "\n\t\t\t\t\t"
-                )
-              ])
-            ])
+              ]
+            )
           })
         ],
         2
@@ -21095,6 +20933,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -21118,7 +20959,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var _this = this;
 
       var app = this;
-      this.axios.post('task/edit-item-' + this.$route.params.id, {
+      this.axios.put('tasks/' + this.$route.params.id, {
         title: app.task.title,
         description: app.task.description,
         deadline: app.task.deadline,
@@ -21138,7 +20979,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     getTask: function getTask() {
       var app = this;
-      this.axios.get('task/item-' + this.$route.params.id).then(function (response) {
+      this.axios.get('tasks/' + this.$route.params.id).then(function (response) {
         app.task = response.data.data;
         var res = response.data.data.executors;
         res.forEach(function (item, i, res) {
@@ -21164,7 +21005,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     deleteTask: function deleteTask() {
       var app = this;
-      this.axios.delete('task/item-' + this.$route.params.id).then(function (response) {
+      this.axios.delete('tasks/' + this.$route.params.id).then(function (response) {
         window.location = response.data.redirect;
       }).catch(function (error) {
         app.error = true;
@@ -21775,8 +21616,20 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-md-9 col-lg-10" }, [
       _c("div", { staticClass: "status" }, [
+        _c("span", { staticClass: "status_item" }, [_vm._v("Общие сведения")]),
+        _vm._v(" "),
+        _c("span", { staticClass: "status_item" }, [
+          _vm._v("Подзадачи "),
+          _c("span", { staticClass: "status_count" }, [_vm._v("0")])
+        ]),
+        _vm._v(" "),
         _c("span", { staticClass: "status_item" }, [
           _vm._v("Комментарии "),
+          _c("span", { staticClass: "status_count" }, [_vm._v("0")])
+        ]),
+        _vm._v(" "),
+        _c("span", { staticClass: "status_item" }, [
+          _vm._v("Документы "),
           _c("span", { staticClass: "status_count" }, [_vm._v("0")])
         ])
       ])
@@ -22560,7 +22413,74 @@ if (false) {
 /* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Auth = __webpack_require__(77)();
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = null
+/* template */
+var __vue_template__ = __webpack_require__(77)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/NotFound.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-2ce50e5a", Component.options)
+  } else {
+    hotAPI.reload("data-v-2ce50e5a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("h2", [_vm._v("Упс 404")])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-2ce50e5a", module.exports)
+  }
+}
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Auth = __webpack_require__(79)();
 
 module.exports = (function () {
 
@@ -22601,11 +22521,11 @@ module.exports = (function () {
 })();
 
 /***/ }),
-/* 77 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __utils  = __webpack_require__(78),
-    __token  = __webpack_require__(79),
+var __utils  = __webpack_require__(80),
+    __token  = __webpack_require__(81),
     __cookie = __webpack_require__(10)
 
 module.exports = function () {
@@ -23315,7 +23235,7 @@ module.exports = function () {
 
 
 /***/ }),
-/* 78 */
+/* 80 */
 /***/ (function(module, exports) {
 
 module.exports = (function (){
@@ -23397,7 +23317,7 @@ module.exports = (function (){
 
 
 /***/ }),
-/* 79 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __cookie = __webpack_require__(10);
@@ -23477,7 +23397,7 @@ module.exports = (function () {
 })();
 
 /***/ }),
-/* 80 */
+/* 82 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -23499,7 +23419,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 81 */
+/* 83 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -23565,7 +23485,7 @@ module.exports = {
 
 
 /***/ }),
-/* 82 */
+/* 84 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -23633,7 +23553,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 83 */
+/* 85 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

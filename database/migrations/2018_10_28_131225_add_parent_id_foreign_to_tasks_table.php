@@ -14,7 +14,7 @@ class AddParentIdForeignToTasksTable extends Migration
     public function up()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->foreign('parent_id')->references('id')->on('tasks');
+            $table->foreign('parent_id')->references('id')->on('tasks')->onDelete('cascade');
         });
     }
 

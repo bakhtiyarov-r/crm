@@ -6,8 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-    protected $table = "tasks";
-    public $timestamps = true;
+    protected $fillable = [
+        'title', 'description', 'opened', 'done', 'closed', 'deadline', 'immediate', 'drafts', 'canceled'   
+    ];
+
+    public function getDeadlineAttribute($value) {
+        return \Carbon\Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function getCreatedAtAttribute($value) {
+        return \Carbon\Carbon::parse($value)->format('Y-m-d');
+    }
 
     public function documents()
     {
@@ -17,6 +26,11 @@ class Task extends Model
     public function user()
     {
     	return $this->belongsTo('App\User');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo('App\Company');
     }
 
     public function project()

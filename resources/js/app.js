@@ -18,6 +18,7 @@ import Home from './components/Home'
 import Admin from './components/Admin'
 import Register from './components/Register'
 import Login from './components/Login'
+import NotFound from './components/NotFound'
 
 const router = new VueRouter({
   mode: 'history',
@@ -44,7 +45,7 @@ const router = new VueRouter({
       }
     },
     {
-      path: '/projects/project-id-:id',
+      path: '/projects/:id',
       name: 'project-id',
       component: ProjectItem,
       meta: {
@@ -60,7 +61,7 @@ const router = new VueRouter({
       }
     },
     {
-      path: '/tasks/task-id-:id',
+      path: '/tasks/:id',
       name: 'task-id',
       component: TaskItem,
       meta: {
@@ -95,11 +96,11 @@ const router = new VueRouter({
       meta: {
         auth: false
       }
-    }
-    // ,
-    // { path: '/404',
-    //   component: NotFound
-    // },  
+    },
+    { path: '/404',
+      name: '404',
+      component: NotFound
+    },  
     // { path: '*',
     //   redirect: '/404'
     // }, 

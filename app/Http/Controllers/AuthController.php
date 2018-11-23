@@ -27,8 +27,6 @@ class AuthController extends Controller
 	    $user->password = bcrypt($request->password);
 	    $company->users()->save($user);
 
-        $usersProfile = new UsersProfile;
-        $user->profile()->save($usersProfile);
 
 	    return response([
 	        'status' => 'success',

@@ -18,7 +18,7 @@
 						<div class="filter_name" >
 							<select v-model="project_author"> 
 								<option value="all">Все</option>
-								<option v-for="author in userList" v-bind:value="author.user.name + ' ' + author.user.profile.surname">{{ author.user.name }}&nbsp;{{ author.user.profile.surname }}</option>
+								<option v-for="author in userList" v-bind:value="author.user.id">{{ author.user.name }}&nbsp;{{ author.user.profile.surname }}</option>
 							</select>
 							<!-- <a href="#" v-for="author in tasks.tasks">{{ author.user.name }}&nbsp;{{ author.user.profile.surname }}&nbsp;&nbsp;</a> -->
 						</div>
@@ -46,12 +46,12 @@
 						Выполнить до
 					</div>
 				</div>
-				<div class="row tasks_item" v-for="task in taskList" :key="task.id">
+				<div class="row tasks_item" v-for="task in taskList" v-bind:class="{ done: !task.opened, red: task.immediate}" :key="task.id">
 					<div class="col-lg-2">
 						{{task.opened | status}}
 					</div>
 					<div class="col-lg-5">
-						<a :href="'/tasks/task-id-' + task.id">{{task.title}}</a>
+						<a :href="'/tasks/' + task.id">{{task.title}}</a>
 					</div>
 					<div class="col-lg-3">
 						
@@ -88,6 +88,7 @@
                     </textarea> 
                 </div>
                 <div class="form-group" style="width: 100%;">
+                	Ответственные:
                 	<div v-for="user in users" :key="user.id" style="display:flex;width:200px;justify-content: space-between;align-items: center;">
 	                	<label :for="user.id">{{user.name}} {{user.profile.surname}}</label>
 	                	<input type="checkbox" :id="user.id" class="form-control" :value="user.id" v-model="responsible" >
@@ -128,7 +129,7 @@
             errors: {},
             add_task_success: false,
             isHidden: false,
-            project_author: this.$auth.user().name + ' ' + this.$auth.user().profile.surname,
+            project_author: this.$auth.user().id,
             task_name_filter: '',
             personal_chkd: '',
             night_chkd: '',
@@ -143,7 +144,7 @@
   	methods: {
   		addTask() {
   			var app = this;
-	  		this.axios.post('project/item-' + this.$route.params.id + '/tasks/create', {
+	  		this.axios.post('projects/' + this.$route.params.id + '/tasks', {
 	  			title: app.title,
 	  			description: app.description,
 	  			deadline: app.deadline,
@@ -160,7 +161,7 @@
 	  	},
 	  	getTasks() {
   			var app = this;
-	  		this.axios.get('project/item-' + this.$route.params.id + '/tasks').then(response => {
+	  		this.axios.get('projects/' + this.$route.params.id + '/tasks').then(response => {
 	  			app.tasks = response.data.data;
             }).catch(error => {
                 app.error = true;
@@ -187,7 +188,7 @@
             		if(app.project_author == 'all') {
             			return true;
             		} else {
-            			return elem.user.name + ' ' + elem.user.profile.surname == app.project_author;
+            			return elem.user.id == app.project_author;
             		}
             	})
             }

@@ -16,9 +16,7 @@ class UserController extends Controller
 
 	public function index()
     {
-        $users = User::with('profile')
-        ->where('company_id', Auth::user()->company_id)
-        ->get();
+        $users = Auth::user()->company->users->load('profile');
         return response([
             'status' => 'success',
             'data' => $users
@@ -27,21 +25,9 @@ class UserController extends Controller
 
     public function store(RegisterFormRequest $request)
     { 
-        $user = new User;
-        $user->company_id = Auth::user()->company_id;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->save();
-
-        $usersProfile = new UsersProfile;
-        $usersProfile->surname = $request->surname;
-	    $usersProfile->phone = $request->phone;
-	    $usersProfile->birthday = $request->birthday;
-	    $usersProfile->position = $request->position;
-
-        $user->profile()
-        ->save($usersProfile);
+        $user = new User($request->all());
+        Auth::user()->company->users()->save($user);
+        $user->profile->fill($request->all())->save();
 
         return response([
             'status' => 'success',
@@ -51,18 +37,8 @@ class UserController extends Controller
 
     public function update(Request $request)
 	{
-	    $usersProfile = Auth::user()->profile;
-	    $usersProfile->surname = $request->surname;
-	    $usersProfile->phone = $request->phone;
-	    $usersProfile->birthday = $request->birthday;
-	    $usersProfile->position = $request->position;
-
-	    $user = Auth::user();
-	    $user->email = $request->email;
-	    $user->name = $request->name;
-
-	    $user->profile()->save($usersProfile);
-	    $user->save();
+        $user = Auth::user()->fill($request->all())->save();
+	    Auth::user()->profile->fill($request->all())->save();
 	    return response([
 	        'status' => 'success',
 	        'data' => $user

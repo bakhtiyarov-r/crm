@@ -15,4 +15,14 @@ class Company extends Model
     {
         return $this->hasMany('App\Project');
     }
+
+    public function tasks()
+    {
+        return $this->hasMany('App\Task');
+    }
+
+    public function owner()
+    {
+    	return $this->hasOne('App\User', 'id', 'owner_id');
+    }
 }

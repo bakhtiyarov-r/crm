@@ -16,7 +16,7 @@
 						<div class="status">
 							<a href="#info" v-on:click="currentTab = 'project-info'" v-bind:class="['status_item', { active: currentTab === 'project-info' }]">Общие сведения</a>
 							<a href="#tasks" v-on:click="currentTab = 'project-tasks'" v-bind:class="['status_item', { active: currentTab === 'project-tasks' }]">Задачи</a>
-							<span class="status_item">Комментарии <span class="status_count" >0</span></span>
+							<span class="status_item">Документы <span class="status_count" >0</span></span>
 						</div>
 					</div>
 				</div>
@@ -61,11 +61,14 @@ import ProjectTasks from './ProjectTasks'
   	methods: {
 	  	getProject() {
   			var app = this;
-	  		this.axios.get('project/item-' + this.$route.params.id).then(response => {
+	  		this.axios.get('projects/' + this.$route.params.id).then(response => {
 	  			app.project = response.data.data;
             }).catch(error => {
                 app.error = true;
                 app.errors = error.data;
+    //             if (error.response.status === 403) {
+				// 	this.$router.push({name: '404'});
+				// }
             });  
 	  	}
   	},

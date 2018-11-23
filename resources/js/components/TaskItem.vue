@@ -13,7 +13,10 @@
 				<div class="row divider">
 					<div class="col-md-9 col-lg-10">
 						<div class="status">
+							<span class="status_item">Общие сведения</span>
+							<span class="status_item">Подзадачи <span class="status_count" >0</span></span>
 							<span class="status_item">Комментарии <span class="status_count" >0</span></span>
+							<span class="status_item">Документы <span class="status_count" >0</span></span>
 						</div>
 					</div>
 					<div class="col-md-3 col-lg-2">
@@ -149,7 +152,7 @@
   	methods: {
   		editTask() {
   			var app = this;
-  			this.axios.post('task/edit-item-' + this.$route.params.id, {
+  			this.axios.put('tasks/' + this.$route.params.id, {
 	  			title: app.task.title,
 	  			description: app.task.description,
 	  			deadline: app.task.deadline,
@@ -169,7 +172,7 @@
   		},
 	  	getTask() {
   			var app = this;
-	  		this.axios.get('task/item-' + this.$route.params.id).then(response => {
+	  		this.axios.get('tasks/' + this.$route.params.id).then(response => {
 	  			app.task = response.data.data;
 	  			let res = response.data.data.executors;
 	            res.forEach(function(item, i, res){
@@ -195,7 +198,7 @@
 	    },
 	  	deleteTask() {
   			var app = this;
-	  		this.axios.delete('task/item-' + this.$route.params.id).then(response => {
+	  		this.axios.delete('tasks/' + this.$route.params.id).then(response => {
 	  			window.location = response.data.redirect;
             }).catch(error => {
                 app.error = true;

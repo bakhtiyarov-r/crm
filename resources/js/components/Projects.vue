@@ -63,7 +63,7 @@
 						{{project.opened | status}}
 					</div>
 					<div class="col-lg-3">
-						<a :href="'/projects/project-id-' + project.id">{{project.title}}</a>
+						<a :href="'/projects/' + project.id">{{project.title}}</a>
 					</div>
 					<div class="col-lg-7">
 						{{project.description}}
@@ -131,7 +131,7 @@
   	methods: {
   		addProject() {
   			var app = this;
-	  		this.axios.post('project/create', {
+	  		this.axios.post('projects', {
 	  			title: app.title,
 	  			description: app.description,
 	  			responsible: app.responsible
@@ -145,7 +145,7 @@
 	  	},
 	  	getProjects() {
   			var app = this;
-	  		this.axios.get('project/show').then(response => {
+	  		this.axios.get('projects').then(response => {
 	  			app.projects = response.data.data;
             }).catch(error => {
                 app.error = true;

@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use Auth;
 use JWTAuth;
 use App\Task;
+use App\Project;
 use App\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\ViewTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\DeleteTaskRequest;
 
 class TaskController extends Controller
 {
@@ -17,11 +22,7 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $task = Task::with('user.profile')
-        ->whereHas('user', function ($query) {
-            $query->where('company_id', Auth::user()->company_id);
-        })
-        ->get();
+        $task = Auth::user()->company->tasks->load(['user.profile', 'executors.profile']);
         return response([
             'status' => 'success',
             'data' => $task
@@ -44,20 +45,15 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id)
+    public function store(StoreTaskRequest $request, Project $project)
     {
-        $task = new Task;
-        $task->user_id = Auth::user()->id;
-        $task->project_id = $id;
-        $task->title = $request->title;
-        $task->description = $request->description;
-        $task->deadline = $request->deadline;
-        $task->immediate = $request->immediate;
+        $task = new Task($request->all());
         $task->opened = true;
         $task->done = false;
-        $task->drafts = $request->drafts;
         $task->canceled = false;
-        $task->save();
+        $task->user_id = Auth::user()->id;
+        $task->company_id = Auth::user()->company_id;
+        $project->tasks()->save($task);
         $task->executors()->sync($request->responsible);
 
         return response([
@@ -72,21 +68,14 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(ViewTaskRequest $request, Task $task)
     {
-        $task = Task::with(['user.profile', 'executors.profile'])
-        ->whereHas('user', function ($query) {
-            $query->where('company_id', Auth::user()->company_id);
-        })
-        ->find($id);
+        $task = $task->load(['user.profile', 'executors.profile']);
         
         return response([
             'status' => 'success',
             'data' => $task
         ]);
-
-
-
     }
 
     /**
@@ -107,18 +96,10 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateTaskRequest $request, Task $task)
     {
-        $task = Task::where('user_id', Auth::user()->id)->find($id);
-        $task->title = $request->title;
-        $task->description = $request->description;
-        $task->deadline = $request->deadline;
-        $task->opened = $request->opened;
-        $task->immediate = $request->immediate;
-        $task->drafts = $request->drafts;
-        $task->canceled = $request->canceled;
+        $task->fill($request->all())->save();
         $task->executors()->sync($request->responsible);
-        $task->save();
 
         return response([
             'status' => 'success',
@@ -132,9 +113,9 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(DeleteTaskRequest $request, Task $task)
     {
-        $task = Task::where('user_id', Auth::user()->id)->find($id)->delete();
+        $task->delete();
         return response([
             'status' => 'success',
             'redirect' => '/tasks'

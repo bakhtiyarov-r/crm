@@ -15,6 +15,7 @@ class CreateCompaniesTable extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('owner_id')->unsigned()->nullable();
             $table->string('title');
             $table->string('inn')->nullable();
             $table->string('kpp')->nullable();

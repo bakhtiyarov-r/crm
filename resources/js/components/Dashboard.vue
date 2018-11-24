@@ -27,11 +27,11 @@
                         </div>
                         <div>
                             <span class="task_title">Дата приема:</span>
-                            <span class="task_value">{{created_at}}</span>
+                            <span class="task_value">{{created_at | date}}</span>
                         </div>
                         <div>
                             <span class="task_title">День рождения:</span>
-                            <span class="task_value">{{birthday}}</span>
+                            <span class="task_value">{{birthday | date}}</span>
                         </div>
                         <div>
                             <span class="task_title">Телефон:</span>
@@ -131,6 +131,12 @@
                     app.error = true;
                     app.errors = resp.response.data.errors;
                 });                
+            }
+        },
+        filters: {
+            date(value) {
+                if (!value) return;
+                return value.split('-').reverse().join('.');
             }
         }
     }

@@ -57,7 +57,7 @@
 						
 					</div>
 					<div class="col-lg-2">
-						{{task.deadline}}
+						{{task.deadline | date}}
 					</div>
 				</div>
 			</div>
@@ -216,6 +216,10 @@
   		status(value) {
   			if (!value) return 'Закрыто';
   			return 'Открыто';
+  		},
+  		date(value) {
+  			if (!value) return;
+  			return value.split('-').reverse().join('.');
   		}
   	}
   }

@@ -66,7 +66,7 @@ class ProjectPolicy
      */
     public function restore(User $user, Project $project)
     {
-        return $user->company_id == $project->company_id;
+        return $user->company_id == $company->id;
     }
 
     /**

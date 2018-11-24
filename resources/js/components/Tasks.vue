@@ -60,6 +60,9 @@
 					</div>
 					<div class="col-lg-9">
 						<div class="filter_name">
+							<label for="" >
+								Ответственный:
+							</label>
 							<select v-model="task_author"> 
 								<option value="all">Все</option>
 								<option v-for="author in userList" v-bind:value="author.id">{{ author.name }}&nbsp;{{ author.profile.surname }}</option>
@@ -94,10 +97,10 @@
 						<a :href="'/tasks/' + task.id">{{task.title}}</a>
 					</div>
 					<div class="col-lg-3">
-						{{task.deadline}}
+						{{task.deadline | date}}
 					</div>
 					<div class="col-lg-3">
-						{{task.created_at}}
+						{{task.created_at | date}}
 					</div>
 				</div>
 			</div>
@@ -203,6 +206,10 @@
   		status(value) {
   			if (!value) return 'Закрыто';
   			return 'Открыто';
+  		},
+  		date(value) {
+  			if (!value) return;
+  			return value.split('-').reverse().join('.');
   		}
   	}
   }

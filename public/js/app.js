@@ -16534,6 +16534,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 app.errors = resp.response.data.errors;
             });
         }
+    },
+    filters: {
+        date: function date(value) {
+            if (!value) return;
+            return value.split('-').reverse().join('.');
+        }
     }
 });
 
@@ -16588,7 +16594,7 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("span", { staticClass: "task_value" }, [
-                _vm._v(_vm._s(_vm.created_at))
+                _vm._v(_vm._s(_vm._f("date")(_vm.created_at)))
               ])
             ]),
             _vm._v(" "),
@@ -16598,7 +16604,7 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("span", { staticClass: "task_value" }, [
-                _vm._v(_vm._s(_vm.birthday))
+                _vm._v(_vm._s(_vm._f("date")(_vm.birthday)))
               ])
             ]),
             _vm._v(" "),
@@ -18648,83 +18654,87 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      project: [],
-      users: [],
-      responsible: [],
-      isHidden: false,
-      edit_success: false,
-      error: false,
-      errors: {}
-    };
-  },
-  mounted: function mounted() {
-    this.getProject();
-    this.getUsers();
-  },
+    data: function data() {
+        return {
+            project: [],
+            users: [],
+            responsible: [],
+            isHidden: false,
+            edit_success: false,
+            error: false,
+            errors: {}
+        };
+    },
+    mounted: function mounted() {
+        this.getProject();
+        this.getUsers();
+    },
 
-  methods: {
-    editProject: function editProject() {
-      var _this = this;
+    methods: {
+        editProject: function editProject() {
+            var _this = this;
 
-      var app = this;
-      this.axios.put('projects/' + this.$route.params.id, {
-        title: app.project.title,
-        description: app.project.description,
-        opened: app.project.opened,
-        responsible: app.responsible
-      }).then(function (response) {
-        app.project = response.data.data;
-        app.edit_success = true;
-        _this.getProject();
-      }).catch(function (error) {
-        app.error = true;
-        app.errors = error.data;
-      });
+            var app = this;
+            this.axios.put('projects/' + this.$route.params.id, {
+                title: app.project.title,
+                description: app.project.description,
+                opened: app.project.opened,
+                responsible: app.responsible
+            }).then(function (response) {
+                app.project = response.data.data;
+                app.edit_success = true;
+                _this.getProject();
+            }).catch(function (error) {
+                app.error = true;
+                app.errors = error.data;
+            });
+        },
+        getProject: function getProject() {
+            var app = this;
+            this.axios.get('projects/' + this.$route.params.id).then(function (response) {
+                app.project = response.data.data;
+                var res = response.data.data.executors;
+                res.forEach(function (item, i, res) {
+                    for (var key in item) {
+                        if (key === 'id') {
+                            app.responsible.push(item[key]);
+                        }
+                    }
+                });
+            }).catch(function (error) {
+                app.error = true;
+                app.errors = error.data;
+            });
+        },
+        getUsers: function getUsers() {
+            var app = this;
+            this.axios.get('users/show').then(function (response) {
+                app.users = response.data.data;
+            }).catch(function (error) {
+                app.error = true;
+                app.errors = error.data;
+            });
+        },
+        deleteProject: function deleteProject() {
+            var app = this;
+            this.axios.delete('projects/' + this.$route.params.id).then(function (response) {
+                window.location = response.data.redirect;
+            }).catch(function (error) {
+                app.error = true;
+                app.errors = error.data;
+            });
+        }
     },
-    getProject: function getProject() {
-      var app = this;
-      this.axios.get('projects/' + this.$route.params.id).then(function (response) {
-        app.project = response.data.data;
-        var res = response.data.data.executors;
-        res.forEach(function (item, i, res) {
-          for (var key in item) {
-            if (key === 'id') {
-              app.responsible.push(item[key]);
-            }
-          }
-        });
-      }).catch(function (error) {
-        app.error = true;
-        app.errors = error.data;
-      });
-    },
-    getUsers: function getUsers() {
-      var app = this;
-      this.axios.get('users/show').then(function (response) {
-        app.users = response.data.data;
-      }).catch(function (error) {
-        app.error = true;
-        app.errors = error.data;
-      });
-    },
-    deleteProject: function deleteProject() {
-      var app = this;
-      this.axios.delete('projects/' + this.$route.params.id).then(function (response) {
-        window.location = response.data.redirect;
-      }).catch(function (error) {
-        app.error = true;
-        app.errors = error.data;
-      });
+    filters: {
+        status: function status(value) {
+            if (!value) return 'Закрыто';
+            return 'Открыто';
+        },
+        date: function date(value) {
+            if (!value) return;
+            return value.split('-').reverse().join('.');
+        }
     }
-  },
-  filters: {
-    status: function status(value) {
-      if (!value) return 'Закрыто';
-      return 'Открыто';
-    }
-  }
 });
 
 /***/ }),
@@ -18744,7 +18754,7 @@ var render = function() {
               _c("span", { staticClass: "task_title" }, [_vm._v("Создан:")]),
               _vm._v(" "),
               _c("span", { staticClass: "task_value" }, [
-                _vm._v(_vm._s(_vm.project.created_at))
+                _vm._v(_vm._s(_vm._f("date")(_vm.project.created_at)))
               ])
             ]),
             _vm._v(" "),
@@ -19400,6 +19410,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         status: function status(value) {
             if (!value) return 'Закрыто';
             return 'Открыто';
+        },
+        date: function date(value) {
+            if (!value) return;
+            return value.split('-').reverse().join('.');
         }
     }
 });
@@ -19670,7 +19684,9 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "col-lg-2" }, [
                   _vm._v(
-                    "\n\t\t\t\t\t\t" + _vm._s(task.deadline) + "\n\t\t\t\t\t"
+                    "\n\t\t\t\t\t\t" +
+                      _vm._s(_vm._f("date")(task.deadline)) +
+                      "\n\t\t\t\t\t"
                   )
                 ])
               ]
@@ -20303,6 +20319,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -20397,6 +20416,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     status: function status(value) {
       if (!value) return 'Закрыто';
       return 'Открыто';
+    },
+    date: function date(value) {
+      if (!value) return;
+      return value.split('-').reverse().join('.');
     }
   }
 });
@@ -20596,6 +20619,10 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "col-lg-9" }, [
             _c("div", { staticClass: "filter_name" }, [
+              _c("label", { attrs: { for: "" } }, [
+                _vm._v("\n\t\t\t\t\t\t\t\tОтветственный:\n\t\t\t\t\t\t\t")
+              ]),
+              _vm._v(" "),
               _c(
                 "select",
                 {
@@ -20676,13 +20703,17 @@ var render = function() {
                 _vm._v(" "),
                 _c("div", { staticClass: "col-lg-3" }, [
                   _vm._v(
-                    "\n\t\t\t\t\t\t" + _vm._s(task.deadline) + "\n\t\t\t\t\t"
+                    "\n\t\t\t\t\t\t" +
+                      _vm._s(_vm._f("date")(task.deadline)) +
+                      "\n\t\t\t\t\t"
                   )
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-lg-3" }, [
                   _vm._v(
-                    "\n\t\t\t\t\t\t" + _vm._s(task.created_at) + "\n\t\t\t\t\t"
+                    "\n\t\t\t\t\t\t" +
+                      _vm._s(_vm._f("date")(task.created_at)) +
+                      "\n\t\t\t\t\t"
                   )
                 ])
               ]
@@ -21021,6 +21052,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     status: function status(value) {
       if (!value) return 'Закрыто';
       return 'Открыто';
+    },
+    date: function date(value) {
+      if (!value) return;
+      return value.split('-').reverse().join('.');
     }
   }
 });
@@ -21080,7 +21115,7 @@ var render = function() {
               _c("span", { staticClass: "task_title" }, [_vm._v("Создана:")]),
               _vm._v(" "),
               _c("span", { staticClass: "task_value" }, [
-                _vm._v(_vm._s(_vm.task.created_at))
+                _vm._v(_vm._s(_vm._f("date")(_vm.task.created_at)))
               ])
             ]),
             _vm._v(" "),
@@ -21090,7 +21125,7 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("span", { staticClass: "task_value" }, [
-                _vm._v(_vm._s(_vm.task.deadline))
+                _vm._v(_vm._s(_vm._f("date")(_vm.task.deadline)))
               ])
             ]),
             _vm._v(" "),

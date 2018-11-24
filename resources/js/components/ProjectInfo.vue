@@ -10,7 +10,7 @@
 					<div class="col-md-9 col-lg-10">
 						<div>
 							<span class="task_title">Создан:</span>
-							<span class="task_value">{{project.created_at}}</span>
+							<span class="task_value">{{project.created_at | date}}</span>
 						</div>
 						<div>
 							<span class="task_title">Статус:</span>
@@ -160,7 +160,11 @@
   		status(value) {
   			if (!value) return 'Закрыто';
   			return 'Открыто';
-  		}
+  		},
+      date(value) {
+        if (!value) return;
+        return value.split('-').reverse().join('.');
+      }
   	}
   }
 </script>

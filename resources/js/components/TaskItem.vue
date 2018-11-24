@@ -34,11 +34,11 @@
 						</div>
 						<div>
 							<span class="task_title">Создана:</span>
-							<span class="task_value">{{task.created_at}}</span>
+							<span class="task_value">{{task.created_at | date}}</span>
 						</div>
 						<div>
 							<span class="task_title">Крайний срок:</span>
-							<span class="task_value">{{task.deadline}}</span>
+							<span class="task_value">{{task.deadline | date}}</span>
 						</div>
 						<div>
 							<span class="task_title">Срочное:</span>
@@ -214,6 +214,10 @@
   		status(value) {
   			if (!value) return 'Закрыто';
   			return 'Открыто';
+  		},
+  		date(value) {
+  			if (!value) return;
+  			return value.split('-').reverse().join('.');
   		}
   	}
   }

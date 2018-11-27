@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Auth;
 use JWTAuth;
 use App\Project;
+use App\Company;
 use Illuminate\Http\Request;
 use App\Http\Requests\ViewProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
@@ -33,14 +34,14 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request, Company $company )
     {
         
         $project = new Project($request->all());
         $project->opened = true;
         $project->closed = false;
         $project->user_id = Auth::user()->id;
-        Auth::user()->company->projects()->save($project);
+        $company->projects()->save($project);
         $project->executors()->sync($request->responsible);
 
         return response([

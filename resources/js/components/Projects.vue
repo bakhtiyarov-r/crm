@@ -131,13 +131,14 @@
   	methods: {
   		addProject() {
   			var app = this;
-	  		this.axios.post('projects', {
+	  		this.axios.post(this.$auth.user().company_id + '/projects', {
 	  			title: app.title,
 	  			description: app.description,
 	  			responsible: app.responsible
 	  		}).then(response => {
 	  			this.getProjects();
 	  			app.add_project_success = true;
+	  			app.isHidden = false;
             }).catch(error => {
                 app.error = true;
                 app.errors = error.data;

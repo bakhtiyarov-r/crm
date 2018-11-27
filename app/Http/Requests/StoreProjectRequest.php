@@ -12,8 +12,8 @@ class StoreProjectRequest extends FormRequest
      * @return bool
      */
     public function authorize()
-    {
-        return $this->user()->can('restore', $this->route('project'));
+    {   
+        return $this->user()->can('restore', $this->route('company'));
     }
 
     /**

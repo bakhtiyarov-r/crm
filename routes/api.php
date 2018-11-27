@@ -18,9 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('auth/register', 'AuthController@register');
-
 Route::post('auth/login', 'AuthController@login');
-
 
 
 Route::group(['middleware' => 'jwt.auth'], function() {
@@ -40,6 +38,7 @@ Route::group(['middleware' => 'jwt.auth'], function() {
 
 	Route::resource('projects', ProjectController::class);
 
+	Route::post('{company}/projects', 'ProjectController@store');
 	Route::get('projects/{project}/tasks', 'ProjectController@showTasks');
 	Route::post('projects/{project}/tasks', 'TaskController@store');
 	

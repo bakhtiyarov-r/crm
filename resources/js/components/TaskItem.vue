@@ -164,6 +164,7 @@
 	  		}).then(response => {
 	  			app.task = response.data.data;
 	  			app.edit_task_success = true;
+	  			app.isHidden = false;
 	  			this.getTask();
             }).catch(error => {
                 app.error = true;

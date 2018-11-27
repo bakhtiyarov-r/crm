@@ -154,6 +154,7 @@
 	  		}).then(response => {
 	  			this.getTasks();
 	  			app.add_task_success = true;
+	  			app.isHidden = false;
             }).catch(error => {
                 app.error = true;
                 app.errors = error.data;

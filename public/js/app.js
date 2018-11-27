@@ -17887,13 +17887,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this = this;
 
             var app = this;
-            this.axios.post('projects', {
+            this.axios.post(this.$auth.user().company_id + '/projects', {
                 title: app.title,
                 description: app.description,
                 responsible: app.responsible
             }).then(function (response) {
                 _this.getProjects();
                 app.add_project_success = true;
+                app.isHidden = false;
             }).catch(function (error) {
                 app.error = true;
                 app.errors = error.data;
@@ -18683,6 +18684,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).then(function (response) {
                 app.project = response.data.data;
                 app.edit_success = true;
+                app.isHidden = false;
                 _this.getProject();
             }).catch(function (error) {
                 app.error = true;
@@ -19349,6 +19351,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).then(function (response) {
                 _this.getTasks();
                 app.add_task_success = true;
+                app.isHidden = false;
             }).catch(function (error) {
                 app.error = true;
                 app.errors = error.data;
@@ -21002,6 +21005,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }).then(function (response) {
         app.task = response.data.data;
         app.edit_task_success = true;
+        app.isHidden = false;
         _this.getTask();
       }).catch(function (error) {
         app.error = true;

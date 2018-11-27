@@ -114,6 +114,7 @@
 	  		}).then(response => {
 	  			app.project = response.data.data;
 	  			app.edit_success = true;
+          app.isHidden = false;
 	  			this.getProject();
             }).catch(error => {
                 app.error = true;

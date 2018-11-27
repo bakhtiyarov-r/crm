@@ -71,7 +71,7 @@ class CompanyPolicy
      */
     public function restore(User $user, Company $company)
     {
-        //
+        return $user->company_id == $company->id;
     }
 
     /**

@@ -116,18 +116,62 @@ header {
 	margin: 0px 15px 0 20px;
 	vertical-align: middle;
     line-height: 55px;
-	
+	position: relative;
 }
 
-.user_notification::after {
-	content: "\25cf";
-      font-size: 12px; 
-      color: #ff6633;
-      position: relative;
-    top: -7px;
-    left: -10px;
+.notification__title, notification__link {
+    height: 25px;
+}
+.notification__item {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #dddddd;
+}
+.notification {
+    cursor: pointer;
+    display: none;
+    flex-direction: column;
+    width: 300px;
+    height: 400px;
+    overflow-y: scroll;
+    z-index: 9;
+    position: absolute;
+    top: 54px;
+    right: -39px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-color: rgba(0,0,0,.2);
+    color: #000;
+    -webkit-box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    box-shadow: 0 2px 10px rgba(0,0,0,.2);
+    outline: none;
+    -webkit-animation: gb__a .2s;
+    animation: form_open 2s;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-user-select: text;
+    line-height: 32px;
+}
+.user_notification:hover .notification {
+    display: flex;
 }
 
+
+.user_notification-full {
+    display: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 100px;
+    background: #ff6633;
+    position: absolute;
+    top: 18px;
+    left: 10px;
+}
+
+
+.user_notification-full.full {
+    display: block;
+}
 
 .user_help {
 	float: left;
@@ -238,6 +282,12 @@ header {
     color: #ffffff;
     text-decoration: none;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+}
+.important:before {
+    content: "\2757";
+    font-size: 20px;
+    color: red;
+    text-decoration: none;
 }
 
 .task_edit:before {
@@ -452,11 +502,14 @@ input[type="checkbox"]:checked:before {
     align-items: center;
     padding: 0.75rem 0;
 }
-.tasks_item.done {
-    opacity: .4;
-}
+
 .tasks_item.red {
     color: red;
+}
+
+.tasks_item.done {
+    opacity: .4;
+    color: #212529
 }
 
 .user_name {
@@ -524,6 +577,7 @@ input[type="checkbox"]:checked:before {
     flex-direction: column;
 
 }
+
 
 @keyframes form_open {
     0% {

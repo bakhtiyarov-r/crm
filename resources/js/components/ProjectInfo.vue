@@ -32,10 +32,8 @@
 						</div>
 					</div>
 					<div class="action__btns">
-            <a href="#" class="btn_orange task_edit" @click="isHidden = true" title="Править">
-            </a>
-            <a href="#" class="btn_orange task_delete" @click="deleteProject" title="Удалить">
-            </a>
+            <button-orange btnClass="btn_orange task_edit" @click.native="isHidden = true" btnTitle="Править"></button-orange>
+            <button-orange btnClass="btn_orange task_delete" @click.native="deleteProject" btnTitle="Удалить"></button-orange>
 					</div>
 				</div>
 			</div>
@@ -86,7 +84,6 @@
 	</div>
 </template>
 <script>
-
   export default {
   	data() {
   		return {

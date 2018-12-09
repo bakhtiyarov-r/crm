@@ -26,6 +26,9 @@ class AuthController extends Controller
 	    $user->name = $request->name;
 	    $user->password = $request->password;
 	    $company->users()->save($user);
+        
+        $company->owner_id = $user->id;
+        $company->save();
 
 
 	    return response([
@@ -52,7 +55,7 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        $user = User::with('profile')->find(Auth::user()->id);
+        $user = User::with(['profile', 'notifications'])->find(Auth::user()->id);
         return response([
             'status' => 'success',
             'data' => $user

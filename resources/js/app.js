@@ -8,6 +8,7 @@ Vue.use(VueAxios, axios);
 axios.defaults.baseURL = 'http://mysite.local/api';
 
 import App from './components/App'
+import UserItem from './components/UserItem'
 import Dashboard from './components/Dashboard'
 import Company from './components/Company'
 import Projects from './components/Projects'
@@ -19,6 +20,9 @@ import Admin from './components/Admin'
 import Register from './components/Register'
 import Login from './components/Login'
 import NotFound from './components/NotFound'
+import ButtonOrange from './components/ButtonOrange'
+
+Vue.component('button-orange', ButtonOrange)
 
 const router = new VueRouter({
   mode: 'history',
@@ -32,6 +36,14 @@ const router = new VueRouter({
       path: '/company',
       name: 'company',
       component: Company,
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/users/:id',
+      name: 'user-item',
+      component: UserItem,
       meta: {
         auth: true
       }

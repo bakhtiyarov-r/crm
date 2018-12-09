@@ -20,7 +20,7 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        return true;//$user->company_id === $model->company->id;
+        return $user->company_id == $model->company_id;
     }
 
     /**

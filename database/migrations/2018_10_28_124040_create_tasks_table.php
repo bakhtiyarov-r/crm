@@ -23,9 +23,9 @@ class CreateTasksTable extends Migration
             $table->string('description')->nullable();
             $table->dateTime('deadline')->nullable();
             $table->boolean('immediate')->nullable();
-            $table->boolean('opened')->nullable();
-            $table->boolean('done')->nullable();
-            $table->boolean('canceled')->nullable();
+            $table->boolean('opened')->default(true);
+            $table->boolean('done')->default(false);
+            $table->boolean('canceled')->default(false);
             $table->boolean('drafts')->nullable();
             $table->timestamps();
 

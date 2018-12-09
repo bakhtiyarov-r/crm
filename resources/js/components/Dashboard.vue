@@ -13,13 +13,21 @@
                     <div class="col-md-9 col-lg-10">
                     </div>
                     <div class="col-md-3 col-lg-2">
-                        <a href="#" class="btn_orange task_edit" @click="isHidden = true" title="Править">
-                        </a>
-                        <!-- <a href="#" class="btn_orange task_delete" @click="deleteProject" title="Удалить">
-                        </a> -->
+                        <button-orange btnClass="btn_orange task_edit" @click.native="isHidden = true" btnTitle="Править"></button-orange>
                     </div>
                 </div>
                 <div class="row content">
+                    <div class="col-md-4 col-lg-4">
+                        <img  :src="'/storage/avatars/' + avatar" style="width: 100%;">
+                        <label for="avatarFile">Изменить фото профиля</label>
+                        <div >
+                            <input type="file" class="form-control-file" ref="avatar"  v-on:change="handleFilesUpload()" id="avatarFile" aria-describedby="fileHelp">
+                            <small id="fileHelp" class="form-text text-muted">Пожалуйста используйте только изображения размером не более 500KB.</small>
+                            <span class="help-block" v-if="error && errors.avatar">{{ errors.avatar }}</span>
+                            <button type="submit" class="btn btn-default" v-on:click="updateAvatar()">Отправить</button>
+                        </div>
+                        
+                    </div>
                     <div class="col-md-8 col-lg-8">
                         <div>
                             <span class="task_title">Должность:</span>
@@ -42,9 +50,7 @@
                             <span class="task_value">{{email}}</span>
                         </div>
                     </div>
-                    <div class="col-md-4 col-lg-4">
-                        
-                    </div>
+                    
                 </div>
             </div>
         </section>
@@ -108,6 +114,8 @@
                 position: this.$auth.user().profile.position,
                 birthday: this.$auth.user().profile.birthday,
                 created_at: this.$auth.user().created_at,
+                avatar: this.$auth.user().profile.avatar,
+                uploadedAvatar: '',
                 isHidden: false,
                 edit_success: false,
                 error: false,
@@ -116,7 +124,26 @@
             };
         },
         methods: {
-            update(){
+            updateAvatar() {
+                var app = this;
+                var formData = new FormData();
+                formData.append('avatar', app.uploadedAvatar);
+                this.axios.post('user/avatar', formData, {
+                    headers: {
+                      'Content-Type': 'multipart/form-data'
+                    }
+                }).then(response => {
+                    app.avatar = response.data.data;
+                    app.success = true
+                }).catch(error => {
+                    app.error = true;
+                    app.errors = resp.response.data.errors;
+                });    
+            },
+            handleFilesUpload() {
+                this.uploadedAvatar = this.$refs.avatar.files[0];
+            },
+            update() {
                 var app = this
                 this.axios.post('user/edit', {
                     name: app.name,

@@ -16,7 +16,18 @@
           <div class="col-lg-5" style="display:flex; justify-content: flex-end;">
             <div class="user">
               <div v-if="$auth.check()" class="user_notification">
-                <a href="#"><img src="../../assets/ic-notifications-black-24-px.png"></a>
+                <img src="../../assets/ic-notifications-black-24-px.png">
+                <div class="user_notification-full" :class="{full: $auth.user().notifications.length > 0}"></div>
+                <div class="notification" v-if="$auth.user().notifications.length > 0">
+                  <div class="notification__item" v-for="notification in $auth.user().notifications">
+                    <div class="notification__title">
+                      {{notification.data.topic}}
+                    </div>
+                    <div class="notification__link">
+                      <a :href="notification.data.link">{{notification.data.title}}</a>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="user_name">
                 <router-link :to="{ name: 'login' }" v-if="!$auth.check()">Войти </router-link>
@@ -44,7 +55,31 @@
   </div>
 
 </template>
+
 <script>
-  export default {}
+  
+
+  export default {
+    // data() {
+    //   return {
+    //     full: false
+    //   }
+    // },
+    // mounted() {
+    //   this.notifFull();
+    // },
+    // methods: {
+    //   notifFull() {
+    //     var app = this;
+    //     if (app.$auth.user()) {
+    //       if (app.$auth.user().length > 0 ) {
+    //         app.full = true;
+    //       } else {
+    //         app.full = false;
+    //       }
+    //     }
+    //   }
+    // }
+  }
 </script>
 

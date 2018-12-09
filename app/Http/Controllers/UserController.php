@@ -8,6 +8,7 @@ use App\Company;
 use App\User;
 use App\UsersProfile;
 use App\Http\Requests\RegisterFormRequest;
+use App\Http\Requests\UserShowRequest;
 use Illuminate\Http\Request;
 
 
@@ -20,6 +21,15 @@ class UserController extends Controller
         return response([
             'status' => 'success',
             'data' => $users
+        ]);
+    }
+
+    public function userShow(UserShowRequest $request, User $user)
+    {
+        $user = $user->load('profile');
+        return response([
+            'status' => 'success',
+            'data' => $user
         ]);
     }
 

@@ -15,8 +15,7 @@
 						
 					</div>
 					<div class="col-md-3 col-lg-2">
-						<a href="#" class="btn_orange task_add" @click="isHidden = true">
-						</a>
+						<button-orange btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Добавить"></button-orange>
 					</div>
 				</div>	
 			</div>		

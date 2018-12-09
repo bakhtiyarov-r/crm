@@ -50,7 +50,7 @@ import ProjectTasks from './ProjectTasks'
 	    'project-tasks': ProjectTasks
 	},
 	computed: {
-	    currentTabComponent: function () {
+	    currentTabComponent () {
 	      return this.currentTab
 	    }
 	},

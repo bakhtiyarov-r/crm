@@ -11,9 +11,7 @@
 					</div>
 					<div class="col-lg-9">
 						<div class="filter_checkbox">
-							<input type="checkbox" id="personal" value="personal" v-model="personal_chkd"/><label for="personal"> Персональное</label>
-							<input type="checkbox" id="night" value="night" v-model="night_chkd"/><label for="night"> Ночное</label>
-							<input type="checkbox" id="immediate" value="immediate" v-model="immediate_chkd"/><label for="immediate"> Срочное</label>	            
+								            
 						</div>     	
 						<div class="filter_name" >
 							<select v-model="project_author"> 
@@ -26,8 +24,7 @@
 				</div>  	
 			</div>	
 			<div class="action__btns">
-	            <a href="#" class="btn_orange task_add" @click="isHidden = true">
-				</a>
+				<button-orange btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Добавить"></button-orange>
 			</div>
 		</section>
 		<section>
@@ -46,7 +43,7 @@
 						Выполнить до
 					</div>
 				</div>
-				<div class="row tasks_item" v-for="task in taskList" v-bind:class="{ done: !task.opened, red: task.immediate}" :key="task.id">
+				<div class="row tasks_item" v-for="task in taskList" v-bind:class="{ done: !task.opened, red: Date.parse(task.deadline) < Date.parse(new Date()) }" :key="task.id">
 					<div class="col-lg-2">
 						{{task.opened | status}}
 					</div>
@@ -129,7 +126,7 @@
             errors: {},
             add_task_success: false,
             isHidden: false,
-            project_author: this.$auth.user().id,
+            project_author: 'all',
             task_name_filter: '',
             personal_chkd: '',
             night_chkd: '',
@@ -180,21 +177,27 @@
 	  	}
   	},
     computed: {
+    	sort() {
+			var app = this;
+			if (app.tasks.tasks) {
+				return this.tasks.tasks
+					.sort((a, b) => a.deadline > b.deadline? 1 : -1)
+					.sort((a, b) => a.opened == b.opened? 0 : a.opened? -1 : 1);
+			}
+		},
         taskList() {
         	var app = this;
             var taskName = this.task_name_filter.toLowerCase();
-            if (app.tasks.tasks) {
-            	return app.tasks.tasks.filter(elem => elem.title.toLowerCase().indexOf(taskName) > -1)
-            	.filter(elem => {
-            		if(app.project_author == 'all') {
-            			return true;
-            		} else {
-            			return elem.user.id == app.project_author;
-            		}
-            	})
+            if (app.sort) {
+            	return app.sort.filter(elem => elem.title.toLowerCase().indexOf(taskName) > -1)
+	        	.filter(elem => {
+	        		if(app.project_author == 'all') {
+	        			return true;
+	        		} else {
+	        			return elem.user.id == app.project_author;
+	        		}
+	        	})
             }
-            
-            
         },
         userList() {
         	var app = this;

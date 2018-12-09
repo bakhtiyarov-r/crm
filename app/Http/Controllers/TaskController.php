@@ -7,11 +7,16 @@ use JWTAuth;
 use App\Task;
 use App\Project;
 use App\User;
+
 use Illuminate\Http\Request;
 use App\Http\Requests\ViewTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\DeleteTaskRequest;
+
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\TaskAddedToExecutor;
+use App\Notifications\TaskEdited;
 
 class TaskController extends Controller
 {
@@ -55,6 +60,9 @@ class TaskController extends Controller
         $task->company_id = Auth::user()->company_id;
         $project->tasks()->save($task);
         $task->executors()->sync($request->responsible);
+        $resp = $request->responsible;
+        $users = User::find($resp);
+        Notification::send($users, new TaskAddedToExecutor($task));
 
         return response([
             'status' => 'success',
@@ -70,7 +78,7 @@ class TaskController extends Controller
      */
     public function show(ViewTaskRequest $request, Task $task)
     {
-        $task = $task->load(['user.profile', 'executors.profile']);
+        $task = $task->load(['user.profile', 'executors.profile', 'documents']);
         
         return response([
             'status' => 'success',
@@ -100,6 +108,9 @@ class TaskController extends Controller
     {
         $task->fill($request->all())->save();
         $task->executors()->sync($request->responsible);
+        $resp = $request->responsible;
+        $users = User::find($resp);
+        Notification::send($users, new TaskEdited($task));
 
         return response([
             'status' => 'success',

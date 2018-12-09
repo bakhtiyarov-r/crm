@@ -28,6 +28,9 @@ Route::group(['middleware' => 'jwt.auth'], function() {
 	Route::post('user/edit', 'UserController@update');
 	Route::get('users/show', 'UserController@index');
 	Route::post('user/create', 'UserController@store');
+	
+	Route::get('users/{user}', 'UserController@userShow');
+	Route::post('user/avatar', 'UsersProfileController@updateAvatar');
 
 	// get /projects - index
 	// get /projects/create - create
@@ -40,9 +43,14 @@ Route::group(['middleware' => 'jwt.auth'], function() {
 
 	Route::post('{company}/projects', 'ProjectController@store');
 	Route::get('projects/{project}/tasks', 'ProjectController@showTasks');
+
 	Route::post('projects/{project}/tasks', 'TaskController@store');
 	
 	Route::resource('tasks', TaskController::class);
+
+	Route::post('{task}/document', 'DocumentController@store');
+	Route::put('{task}/document', 'DocumentController@destroy');
+
 
 });
 

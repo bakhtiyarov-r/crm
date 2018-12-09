@@ -89,8 +89,8 @@
 						Дата создания
 					</div>
 				</div>
-				<div class="row tasks_item" v-for="task in taskList" v-bind:class="{ done: !task.opened, red: task.immediate}" :key="task.id">
-					<div class="col-lg-2">
+				<div class="row tasks_item" v-for="task in taskList" v-bind:class="{ done: !task.opened, red: Date.parse(task.deadline) < Date.parse(new Date()) }"  :key="task.id">
+					<div class="col-lg-2" v-bind:class="{important: task.immediate}">
 						{{task.opened | status}}
 					</div>
 					<div class="col-lg-4">
@@ -157,10 +157,16 @@
 		}
   	},
     computed: {
+    	sort() {
+			var app = this;
+			return this.tasks
+				.sort((a, b) => a.deadline > b.deadline? 1 : -1)
+				.sort((a, b) => a.opened == b.opened? 0 : a.opened? -1 : 1);
+		},
         taskList() {
         	var app = this;
             var taskName = this.task_name_filter.toLowerCase();
-            return this.tasks.filter(elem => elem.title.toLowerCase().indexOf(taskName) > -1)
+            return this.sort.filter(elem => elem.title.toLowerCase().indexOf(taskName) > -1)
             	.filter(elem => {
             		if(app.task_author == 'all') {
             			return true;
@@ -204,8 +210,8 @@
     },
   	filters: {
   		status(value) {
-  			if (!value) return 'Закрыто';
-  			return 'Открыто';
+  			if (!value) return 'Закрыта';
+  			return 'Открыта';
   		},
   		date(value) {
   			if (!value) return;

@@ -19,8 +19,8 @@ class CreateProjectsTable extends Migration
             $table->unsignedInteger('user_id')->nullable();
             $table->string('title');
             $table->string('description')->nullable();
-            $table->boolean('opened')->nullable();
-            $table->boolean('closed')->nullable();
+            $table->boolean('opened')->default(true);
+            $table->boolean('closed')->default(false);
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');

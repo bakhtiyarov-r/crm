@@ -6,11 +6,17 @@ use Auth;
 use JWTAuth;
 use App\Project;
 use App\Company;
+use App\User;
+
 use Illuminate\Http\Request;
 use App\Http\Requests\ViewProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Requests\DeleteProjectRequest;
 use App\Http\Requests\StoreProjectRequest;
+
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ProjectAddedToExecutor;
+use App\Notifications\ProjectEdited;
 
 class ProjectController extends Controller
 {
@@ -43,6 +49,9 @@ class ProjectController extends Controller
         $project->user_id = Auth::user()->id;
         $company->projects()->save($project);
         $project->executors()->sync($request->responsible);
+        $resp = $request->responsible;
+        $users = User::find($resp);
+        Notification::send($users, new ProjectAddedToExecutor($project));
 
         return response([
             'status' => 'success',
@@ -76,6 +85,9 @@ class ProjectController extends Controller
     {
         $project->fill($request->all())->save();
         $project->executors()->sync($request->responsible);
+        $resp = $request->responsible;
+        $users = User::find($resp);
+        Notification::send($users, new ProjectEdited($project));
         return response([
             'status' => 'success',
             'data' => $project

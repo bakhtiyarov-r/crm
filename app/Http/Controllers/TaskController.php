@@ -17,6 +17,7 @@ use App\Http\Requests\DeleteTaskRequest;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\TaskAddedToExecutor;
 use App\Notifications\TaskEdited;
+use App\Notifications\TaskClosed;
 
 class TaskController extends Controller
 {
@@ -53,9 +54,6 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request, Project $project)
     {
         $task = new Task($request->all());
-        $task->opened = true;
-        $task->done = false;
-        $task->canceled = false;
         $task->user_id = Auth::user()->id;
         $task->company_id = Auth::user()->company_id;
         $project->tasks()->save($task);
@@ -111,6 +109,10 @@ class TaskController extends Controller
         $resp = $request->responsible;
         $users = User::find($resp);
         Notification::send($users, new TaskEdited($task));
+
+        if ($task->opened == false) {
+            Notification::send($users, new TaskClosed($task));
+        }
 
         return response([
             'status' => 'success',

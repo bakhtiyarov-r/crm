@@ -154,7 +154,7 @@
 	  	},
 	  	getUsers() {
   			var app = this;
-	  		this.axios.get('users/show').then(response => {
+	  		this.axios.get('users').then(response => {
 	  			app.users = response.data.data;
             }).catch(error => {
                 app.error = true;

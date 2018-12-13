@@ -44,8 +44,6 @@ class ProjectController extends Controller
     {
         
         $project = new Project($request->all());
-        $project->opened = true;
-        $project->closed = false;
         $project->user_id = Auth::user()->id;
         $company->projects()->save($project);
         $project->executors()->sync($request->responsible);

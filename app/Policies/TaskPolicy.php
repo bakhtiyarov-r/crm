@@ -11,6 +11,11 @@ class TaskPolicy
 {
     use HandlesAuthorization;
 
+    public function before($user)
+    {
+        return $user->hasSudo('owner');
+    }
+
     /**
      * Determine whether the user can view the task.
      *
@@ -43,7 +48,8 @@ class TaskPolicy
      */
     public function update(User $user, Task $task)
     {
-        return $user->id == $task->user_id && $user->company_id == $task->company_id;
+        return $user->company_id == $task->company_id
+            && ($user->id == $task->user_id || $user->hasPermission('update-task'));
     }
 
     /**
@@ -55,7 +61,8 @@ class TaskPolicy
      */
     public function delete(User $user, Task $task)
     {
-        return $user->id == $task->user_id && $user->company_id == $task->company_id;
+        return $user->company_id == $task->company_id
+            && ($user->id == $task->user_id || $user->hasPermission('delete-task'));
     }
 
     /**
@@ -65,9 +72,10 @@ class TaskPolicy
      * @param  \App\Task  $task
      * @return mixed
      */
-    public function restore(User $user, Project $project)
+    public function restore(User $user, Task $task)
     {
-        return $user->company_id == $project->company_id;
+        return $user->company_id == $task->company_id
+            && $user->hasPermission('store-task');
     }
 
     /**

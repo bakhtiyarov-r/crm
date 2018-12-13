@@ -10,6 +10,12 @@ class CompanyPolicy
 {
     use HandlesAuthorization;
 
+    public function before($user)
+    {
+        return $user->hasSudo('owner');
+    }
+    
+
     /**
      * Determine whether the user can view the company.
      *
@@ -71,7 +77,8 @@ class CompanyPolicy
      */
     public function restore(User $user, Company $company)
     {
-        return $user->company_id == $company->id;
+        return $user->company_id == $company->id
+            && $user->hasPermission('store-project');
     }
 
     /**

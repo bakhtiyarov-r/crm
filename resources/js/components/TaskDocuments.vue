@@ -7,7 +7,7 @@
                         <input type="checkbox" class="form-control" :value="document.id" v-model="remove_files">
                     </div>
 					<div class="col-lg-11">
-						<a :href="'/storage/' + document.link">{{document.link}}</a>
+						<a :href="'/storage/' + document.link">{{document.doc_name}}</a>
 					</div>
 				</div>
 			</div>

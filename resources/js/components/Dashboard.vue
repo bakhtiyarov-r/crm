@@ -145,7 +145,7 @@
             },
             update() {
                 var app = this
-                this.axios.post('user/edit', {
+                this.axios.put('user/edit', {
                     name: app.name,
                     surname: app.surname,
                     email: app.email,

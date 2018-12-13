@@ -11,6 +11,12 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
+    public function before($user)
+    {
+
+        return $user->hasSudo('owner');
+    }
+
     /**
      * Determine whether the user can view the model.
      *
@@ -20,6 +26,7 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
+        //dd('test');
         return $user->company_id == $model->company_id;
     }
 
@@ -43,7 +50,8 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        //
+        return $user->company_id == $model->company_id
+            && $user->hasPermission('update-user');
     }
 
     /**
@@ -55,7 +63,8 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        //
+        return $user->company_id == $model->company_id
+            && $user->hasPermission('delete-user');
     }
 
     /**
@@ -65,9 +74,9 @@ class UserPolicy
      * @param  \App\User  $model
      * @return mixed
      */
-    public function restore(User $user, User $model)
+    public function restore(User $user)
     {
-        //
+        return $user->hasPermission('store-user');
     }
 
     /**

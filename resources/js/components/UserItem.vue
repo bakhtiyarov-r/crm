@@ -13,7 +13,8 @@
                     <div class="col-md-9 col-lg-10">
                     </div>
                     <div class="col-md-3 col-lg-2">
-                        <!-- <button-orange btnClass="btn_orange task_edit" @click.native="isHidden = true" btnTitle="Править"></button-orange> -->
+                        <button-orange btnClass="btn_orange task_edit" @click.native="isHidden = true" btnTitle="Править"></button-orange>
+                        <button-orange btnClass="btn_orange task_delete" @click.native="deleteUser" btnTitle="Удалить"></button-orange>
                     </div>
                 </div>
                 <div class="row content">
@@ -42,7 +43,6 @@
                             <span class="task_value">{{user.email}}</span>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </section>
@@ -58,35 +58,36 @@
                 <p>Данные изменены</p>
             </div>
             <form autocomplete="off" @submit.prevent="update" method="post">
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
+                <div class="form-group" v-bind:class="{ 'has-error': error && errors.user.name }">
                     <label for="name">Имя</label>
-                    <input type="text" id="name" class="form-control" v-model="name" required>
-                    <span class="help-block" v-if="error && errors.name">{{ errors.name }}</span>
+                    <input type="text" id="name" class="form-control" v-model="user.name" required>
+                    <span class="help-block" v-if="error && errors.user.name">{{ errors.user.name }}</span>
                 </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.surname }">
+                <div class="form-group" v-bind:class="{ 'has-error': error && errors.user.profile.surname }">
                     <label for="surname">Фамилия</label>
-                    <input type="text" id="surname" class="form-control" v-model="surname">
-                    <span class="help-block" v-if="error && errors.surname">{{ errors.surname }}</span>
+                    <input type="text" id="surname" class="form-control" v-model="user.profile.surname">
+                    <span class="help-block" v-if="error && errors.user.profile.surname">{{ errors.user.profile.surname }}</span>
                 </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.position }">
+                <div class="form-group" v-bind:class="{ 'has-error': error && errors.user.profile.position }">
                     <label for="position">Должность</label>
-                    <input type="text" id="position" class="form-control" v-model="position">
-                    <span class="help-block" v-if="error && errors.position">{{ errors.position }}</span>
+                    <input type="text" id="position" class="form-control" v-model="user.profile.position">
+                    <span class="help-block" v-if="error && errors.user.profile.position">{{ errors.user.profile.position }}</span>
                 </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.birthday }">
-                    <label for="birthday">День рождения</label>
-                    <input type="date" id="birthday" class="form-control" v-model="birthday">
-                    <span class="help-block" v-if="error && errors.birthday">{{ errors.birthday }}</span>
-                </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.phone }">
-                    <label for="phone">Телефон</label>
-                    <input type="text" id="phone" class="form-control" v-model="phone">
-                    <span class="help-block" v-if="error && errors.phone">{{ errors.phone }}</span>
-                </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.email }">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" class="form-control" placeholder="user@example.com" v-model="email" required>
-                    <span class="help-block" v-if="error && errors.email">{{ errors.email }}</span>
+                <div v-if="this.$auth.user().slug == 'owner'" class="form-group" v-bind:class="{ 'has-error': error && errors.user.name }">
+                    Выбрать роль:
+                    <div>
+                        <input type="radio" id="one-user" value="1" v-model="user.role_id">
+                        <label for="one-user">User</label>
+                        <br>
+                        <input type="radio" id="one-member" value="2" v-model="user.role_id">
+                        <label for="one-member">Member</label>
+                        <br>
+                        <input type="radio" id="one-manager" value="3" v-model="user.role_id">
+                        <label for="one-manager">Manager</label>
+                        <br>
+                        <input type="radio" id="one-admin" value="4" v-model="user.role_id">
+                        <label for="one-admin">Admin</label>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-default">Отправить</button>
             </form>
@@ -122,19 +123,26 @@
             },
             update() {
                 var app = this
-                this.axios.post('user/edit', {
-                    name: app.name,
-                    surname: app.surname,
-                    email: app.email,
-                    phone: app.phone,
-                    position: app.position,
-                    birthday: app.birthday
+                this.axios.put('users/' + this.$route.params.id, {
+                    name: app.user.name,
+                    surname: app.user.profile.surname,
+                    position: app.user.profile.position,
+                    role_id: app.user.role_id
                 }).then(response => {
                     app.success = true
                 }).catch(error => {
                     app.error = true;
                     app.errors = resp.response.data.errors;
                 });                
+            },
+            deleteUser() {
+                var app = this;
+                this.axios.delete('users/' + this.$route.params.id).then(response => {
+                    window.location = response.data.redirect;
+                }).catch(error => {
+                    app.error = true;
+                    app.errors = error.data;
+                });  
             }
         },
         filters: {

@@ -141,7 +141,7 @@
   	methods: {
   		addTask() {
   			var app = this;
-	  		this.axios.post('projects/' + this.$route.params.id + '/tasks', {
+	  		this.axios.post(this.$route.params.id + '/tasks', {
 	  			title: app.title,
 	  			description: app.description,
 	  			deadline: app.deadline,
@@ -168,7 +168,7 @@
 	  	},
 	  	getUsers() {
   			var app = this;
-	  		this.axios.get('users/show').then(response => {
+	  		this.axios.get('users').then(response => {
 	  			app.users = response.data.data;
             }).catch(error => {
                 app.error = true;

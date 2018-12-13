@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Document extends Model
 {
 	protected $fillable = [
-        'link'  
+        'link', 'doc_name'  
     ];
 
     public function task()

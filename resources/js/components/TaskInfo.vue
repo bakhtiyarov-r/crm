@@ -142,7 +142,6 @@
 	  			app.task = response.data.data;
 	  			app.edit_task_success = true;
 	  			app.isHidden = false;
-	  			this.getTask();
             }).catch(error => {
                 app.error = true;
                 app.errors = error.data;
@@ -167,7 +166,7 @@
 	  	},
 	  	getUsers() {
 	        var app = this;
-	        this.axios.get('users/show').then(response => {
+	        this.axios.get('users').then(response => {
 	            app.users = response.data.data;
 	            }).catch(error => {
 	                app.error = true;

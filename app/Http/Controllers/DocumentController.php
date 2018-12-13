@@ -12,11 +12,15 @@ class DocumentController extends Controller
     public function store(Request $request, Task $task){
         
         foreach ( $request->file('files') as $file) {
+            $fileName = $file->getClientOriginalName();
+            //dd($name);
         	$path = $file->store(
 	            'documents'
 	        );
+            
 	        $task->documents()->create([
-			    'link' => $path,
+                'doc_name' => $fileName,
+                'link' => $path,
 			]);
         }
 
@@ -45,6 +49,7 @@ class DocumentController extends Controller
             array_push($list, $link);
             $document->delete();
         }
+
         Storage::delete($list);
 
 

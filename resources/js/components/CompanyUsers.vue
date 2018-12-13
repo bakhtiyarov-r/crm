@@ -134,7 +134,7 @@
   	methods: {
   		addUser() {
   			var app = this;
-	  		this.axios.post('user/create', {
+	  		this.axios.post('users', {
 	  			name: app.name,
 	  			surname: app.surname,
 	  			email: app.email,
@@ -152,7 +152,7 @@
 	  	},
 	  	getUsers() {
   			var app = this;
-	  		this.axios.get('users/show').then(response => {
+	  		this.axios.get('users').then(response => {
 	  			app.users = response.data.data;
             }).catch(error => {
                 app.error = true;

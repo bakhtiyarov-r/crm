@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'role_id',
     ];
 
     /**
@@ -27,6 +27,19 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function hasSudo($permission)
+    {
+        if ($this->slug == $permission) {
+            return true;
+        }
+        
+    }
+
+    public function hasPermission($permission)
+    {
+        return $this->role->permissions->contains('slug', $permission);
+    }
 
     public function getCreatedAtAttribute($value) {
         return \Carbon\Carbon::parse($value)->format('Y-m-d');
@@ -67,6 +80,9 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Task');
     }
 
-    
+    public function role()
+    {
+        return $this->belongsTo('App\Role');
+    }
 
 }

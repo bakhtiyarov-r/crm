@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Illuminate\Http\Request;
+use Image;
 
 class UsersProfileController extends Controller
 {
@@ -14,9 +15,12 @@ class UsersProfileController extends Controller
         ]);
 
         $avatarName = Auth::user()->id . '_avatar' . '.' . $request->file('avatar')->getClientOriginalExtension();
+
+        $image = Image::make($request->file('avatar'))->fit(300, 300);
         
-		$path = $request->file('avatar')->storeAs(
-            'avatars', $avatarName
+        $storage = storage_path().'/app/public/avatars/';
+        $path = $image->save(
+            $storage.$avatarName
         );
  
         Auth::user()->profile->avatar = $avatarName;
@@ -27,5 +31,15 @@ class UsersProfileController extends Controller
             'data' => $avatarName
         ]);
 
+    }
+
+    public function update(Request $request)
+    {
+        $user = Auth::user()->fill($request->all())->save();
+        Auth::user()->profile->fill($request->all())->save();
+        return response([
+            'status' => 'success',
+            'data' => $user
+           ], 200);
     }
 }

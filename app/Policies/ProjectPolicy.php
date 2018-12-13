@@ -10,6 +10,11 @@ class ProjectPolicy
 {
     use HandlesAuthorization;
 
+    public function before($user)
+    {
+        return $user->hasSudo('owner');
+    }
+
     /**
      * Determine whether the user can view the project.
      *
@@ -42,7 +47,8 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project)
     {
-        return $user->id == $project->user_id && $user->company_id == $project->company_id;
+        return $user->company_id == $project->company_id
+            && ($user->id == $project->user_id || $user->hasPermission('update-project'));
     }
 
     /**
@@ -54,7 +60,8 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project)
     {
-        return $user->id == $project->user_id && $user->company_id == $project->company_id;
+        return $user->company_id == $project->company_id
+            && ($user->id == $project->user_id || $user->hasPermission('delete-project'));
     }
 
     /**
@@ -66,7 +73,8 @@ class ProjectPolicy
      */
     public function restore(User $user, Project $project)
     {
-        return $user->company_id == $project->company_id;
+        return $user->company_id == $project->company_id
+            && $user->hasPermission('store-task');
     }
 
     /**

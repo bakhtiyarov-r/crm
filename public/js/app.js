@@ -16595,6 +16595,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -16627,7 +16643,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 name: app.user.name,
                 surname: app.user.profile.surname,
                 position: app.user.profile.position,
-                role_id: app.user.role_id
+                role_id: app.user.role_id,
+                sudo: app.user.sudo
             }).then(function (response) {
                 app.success = true;
             }).catch(function (error) {
@@ -16821,90 +16838,98 @@ var render = function() {
             }
           },
           [
-            _c(
-              "div",
-              {
-                staticClass: "form-group",
-                class: { "has-error": _vm.error && _vm.errors.user.name }
-              },
-              [
-                _c("label", { attrs: { for: "name" } }, [_vm._v("Имя")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.user.name,
-                      expression: "user.name"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", id: "name", required: "" },
-                  domProps: { value: _vm.user.name },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+            _c("div", { staticClass: "form-row" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "form-group input-group-sm col-sm-6",
+                  class: { "has-error": _vm.error && _vm.errors.user.name }
+                },
+                [
+                  _c("label", { attrs: { for: "name" } }, [_vm._v("Имя")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.user.name,
+                        expression: "user.name"
                       }
-                      _vm.$set(_vm.user, "name", $event.target.value)
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text", id: "name", required: "" },
+                    domProps: { value: _vm.user.name },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.user, "name", $event.target.value)
+                      }
                     }
+                  }),
+                  _vm._v(" "),
+                  _vm.error && _vm.errors.user.name
+                    ? _c("span", { staticClass: "help-block" }, [
+                        _vm._v(_vm._s(_vm.errors.user.name))
+                      ])
+                    : _vm._e()
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-group input-group-sm col-sm-6",
+                  class: {
+                    "has-error": _vm.error && _vm.errors.user.profile.surname
                   }
-                }),
-                _vm._v(" "),
-                _vm.error && _vm.errors.user.name
-                  ? _c("span", { staticClass: "help-block" }, [
-                      _vm._v(_vm._s(_vm.errors.user.name))
-                    ])
-                  : _vm._e()
-              ]
-            ),
+                },
+                [
+                  _c("label", { attrs: { for: "surname" } }, [
+                    _vm._v("Фамилия")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.user.profile.surname,
+                        expression: "user.profile.surname"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text", id: "surname" },
+                    domProps: { value: _vm.user.profile.surname },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(
+                          _vm.user.profile,
+                          "surname",
+                          $event.target.value
+                        )
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.error && _vm.errors.user.profile.surname
+                    ? _c("span", { staticClass: "help-block" }, [
+                        _vm._v(_vm._s(_vm.errors.user.profile.surname))
+                      ])
+                    : _vm._e()
+                ]
+              )
+            ]),
             _vm._v(" "),
             _c(
               "div",
               {
-                staticClass: "form-group",
-                class: {
-                  "has-error": _vm.error && _vm.errors.user.profile.surname
-                }
-              },
-              [
-                _c("label", { attrs: { for: "surname" } }, [_vm._v("Фамилия")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.user.profile.surname,
-                      expression: "user.profile.surname"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", id: "surname" },
-                  domProps: { value: _vm.user.profile.surname },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(_vm.user.profile, "surname", $event.target.value)
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _vm.error && _vm.errors.user.profile.surname
-                  ? _c("span", { staticClass: "help-block" }, [
-                      _vm._v(_vm._s(_vm.errors.user.profile.surname))
-                    ])
-                  : _vm._e()
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "form-group",
+                staticClass: "form-group input-group-sm",
                 class: {
                   "has-error": _vm.error && _vm.errors.user.profile.position
                 }
@@ -16948,113 +16973,196 @@ var render = function() {
               ]
             ),
             _vm._v(" "),
-            this.$auth.user().slug == "owner"
-              ? _c(
-                  "div",
-                  {
-                    staticClass: "form-group",
-                    class: { "has-error": _vm.error && _vm.errors.user.name }
-                  },
-                  [
-                    _vm._v("\n                Выбрать роль:\n                "),
-                    _c("div", [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.user.role_id,
-                            expression: "user.role_id"
-                          }
-                        ],
-                        attrs: { type: "radio", id: "one-user", value: "1" },
-                        domProps: { checked: _vm._q(_vm.user.role_id, "1") },
-                        on: {
-                          change: function($event) {
-                            _vm.$set(_vm.user, "role_id", "1")
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("label", { attrs: { for: "one-user" } }, [
-                        _vm._v("User")
+            _c("div", { staticClass: "form-group" }, [
+              _vm._v("\n                Выбрать роль:\n                "),
+              this.$auth.user().sudo
+                ? _c(
+                    "div",
+                    {
+                      staticClass: "form-row",
+                      class: { "has-error": _vm.error && _vm.errors.user.name }
+                    },
+                    [
+                      _c("div", { staticClass: "form-group col-sm-6" }, [
+                        _c("div", { staticClass: "form-sub-group" }, [
+                          _c("label", { attrs: { for: "one-user" } }, [
+                            _vm._v("Пользователь")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.user.role_id,
+                                expression: "user.role_id"
+                              }
+                            ],
+                            attrs: {
+                              type: "radio",
+                              id: "one-user",
+                              value: "1"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.user.role_id, "1")
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.$set(_vm.user, "role_id", "1")
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-sub-group" }, [
+                          _c("label", { attrs: { for: "one-member" } }, [
+                            _vm._v("Участник")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.user.role_id,
+                                expression: "user.role_id"
+                              }
+                            ],
+                            attrs: {
+                              type: "radio",
+                              id: "one-member",
+                              value: "2"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.user.role_id, "2")
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.$set(_vm.user, "role_id", "2")
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-sub-group" }, [
+                          _c("label", { attrs: { for: "one-manager" } }, [
+                            _vm._v("Менеджер")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.user.role_id,
+                                expression: "user.role_id"
+                              }
+                            ],
+                            attrs: {
+                              type: "radio",
+                              id: "one-manager",
+                              value: "3"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.user.role_id, "3")
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.$set(_vm.user, "role_id", "3")
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-sub-group" }, [
+                          _c("label", { attrs: { for: "one-admin" } }, [
+                            _vm._v("Администратор")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.user.role_id,
+                                expression: "user.role_id"
+                              }
+                            ],
+                            attrs: {
+                              type: "radio",
+                              id: "one-admin",
+                              value: "4"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.user.role_id, "4")
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.$set(_vm.user, "role_id", "4")
+                              }
+                            }
+                          })
+                        ])
                       ]),
                       _vm._v(" "),
-                      _c("br"),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.user.role_id,
-                            expression: "user.role_id"
-                          }
-                        ],
-                        attrs: { type: "radio", id: "one-member", value: "2" },
-                        domProps: { checked: _vm._q(_vm.user.role_id, "2") },
-                        on: {
-                          change: function($event) {
-                            _vm.$set(_vm.user, "role_id", "2")
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("label", { attrs: { for: "one-member" } }, [
-                        _vm._v("Member")
-                      ]),
-                      _vm._v(" "),
-                      _c("br"),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.user.role_id,
-                            expression: "user.role_id"
-                          }
-                        ],
-                        attrs: { type: "radio", id: "one-manager", value: "3" },
-                        domProps: { checked: _vm._q(_vm.user.role_id, "3") },
-                        on: {
-                          change: function($event) {
-                            _vm.$set(_vm.user, "role_id", "3")
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("label", { attrs: { for: "one-manager" } }, [
-                        _vm._v("Manager")
-                      ]),
-                      _vm._v(" "),
-                      _c("br"),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.user.role_id,
-                            expression: "user.role_id"
-                          }
-                        ],
-                        attrs: { type: "radio", id: "one-admin", value: "4" },
-                        domProps: { checked: _vm._q(_vm.user.role_id, "4") },
-                        on: {
-                          change: function($event) {
-                            _vm.$set(_vm.user, "role_id", "4")
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("label", { attrs: { for: "one-admin" } }, [
-                        _vm._v("Admin")
+                      _c("div", { staticClass: "form-group col-sm-6" }, [
+                        _c("div", { staticClass: "form-sub-group" }, [
+                          _c("label", { attrs: { for: "sudo-user" } }, [
+                            _vm._v("Супер администратор")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.user.sudo,
+                                expression: "user.sudo"
+                              }
+                            ],
+                            attrs: { type: "checkbox", id: "sudo-user" },
+                            domProps: {
+                              checked: Array.isArray(_vm.user.sudo)
+                                ? _vm._i(_vm.user.sudo, null) > -1
+                                : _vm.user.sudo
+                            },
+                            on: {
+                              change: function($event) {
+                                var $$a = _vm.user.sudo,
+                                  $$el = $event.target,
+                                  $$c = $$el.checked ? true : false
+                                if (Array.isArray($$a)) {
+                                  var $$v = null,
+                                    $$i = _vm._i($$a, $$v)
+                                  if ($$el.checked) {
+                                    $$i < 0 &&
+                                      _vm.$set(
+                                        _vm.user,
+                                        "sudo",
+                                        $$a.concat([$$v])
+                                      )
+                                  } else {
+                                    $$i > -1 &&
+                                      _vm.$set(
+                                        _vm.user,
+                                        "sudo",
+                                        $$a
+                                          .slice(0, $$i)
+                                          .concat($$a.slice($$i + 1))
+                                      )
+                                  }
+                                } else {
+                                  _vm.$set(_vm.user, "sudo", $$c)
+                                }
+                              }
+                            }
+                          })
+                        ])
                       ])
-                    ])
-                  ]
-                )
-              : _vm._e(),
+                    ]
+                  )
+                : _vm._e()
+            ]),
             _vm._v(" "),
             _c(
               "button",
@@ -17151,6 +17259,8 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
 //
 //
 //
@@ -17528,88 +17638,92 @@ var render = function() {
             }
           },
           [
-            _c(
-              "div",
-              {
-                staticClass: "form-group",
-                class: { "has-error": _vm.error && _vm.errors.name }
-              },
-              [
-                _c("label", { attrs: { for: "name" } }, [_vm._v("Имя")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.name,
-                      expression: "name"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", id: "name", required: "" },
-                  domProps: { value: _vm.name },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+            _c("div", { staticClass: "form-row" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "form-group input-group-sm col-sm-6",
+                  class: { "has-error": _vm.error && _vm.errors.name }
+                },
+                [
+                  _c("label", { attrs: { for: "name" } }, [_vm._v("Имя")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.name,
+                        expression: "name"
                       }
-                      _vm.name = $event.target.value
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text", id: "name", required: "" },
+                    domProps: { value: _vm.name },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.name = $event.target.value
+                      }
                     }
-                  }
-                }),
-                _vm._v(" "),
-                _vm.error && _vm.errors.name
-                  ? _c("span", { staticClass: "help-block" }, [
-                      _vm._v(_vm._s(_vm.errors.name))
-                    ])
-                  : _vm._e()
-              ]
-            ),
+                  }),
+                  _vm._v(" "),
+                  _vm.error && _vm.errors.name
+                    ? _c("span", { staticClass: "help-block" }, [
+                        _vm._v(_vm._s(_vm.errors.name))
+                      ])
+                    : _vm._e()
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "form-group input-group-sm col-sm-6",
+                  class: { "has-error": _vm.error && _vm.errors.surname }
+                },
+                [
+                  _c("label", { attrs: { for: "surname" } }, [
+                    _vm._v("Фамилия")
+                  ]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.surname,
+                        expression: "surname"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: { type: "text", id: "surname" },
+                    domProps: { value: _vm.surname },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.surname = $event.target.value
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.error && _vm.errors.surname
+                    ? _c("span", { staticClass: "help-block" }, [
+                        _vm._v(_vm._s(_vm.errors.surname))
+                      ])
+                    : _vm._e()
+                ]
+              )
+            ]),
             _vm._v(" "),
             _c(
               "div",
               {
-                staticClass: "form-group",
-                class: { "has-error": _vm.error && _vm.errors.surname }
-              },
-              [
-                _c("label", { attrs: { for: "surname" } }, [_vm._v("Фамилия")]),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.surname,
-                      expression: "surname"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", id: "surname" },
-                  domProps: { value: _vm.surname },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.surname = $event.target.value
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _vm.error && _vm.errors.surname
-                  ? _c("span", { staticClass: "help-block" }, [
-                      _vm._v(_vm._s(_vm.errors.surname))
-                    ])
-                  : _vm._e()
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass: "form-group",
+                staticClass: "form-group input-group-sm",
                 class: { "has-error": _vm.error && _vm.errors.position }
               },
               [
@@ -17650,7 +17764,7 @@ var render = function() {
             _c(
               "div",
               {
-                staticClass: "form-group",
+                staticClass: "form-group input-group-sm",
                 class: { "has-error": _vm.error && _vm.errors.birthday }
               },
               [
@@ -17691,7 +17805,7 @@ var render = function() {
             _c(
               "div",
               {
-                staticClass: "form-group",
+                staticClass: "form-group input-group-sm",
                 class: { "has-error": _vm.error && _vm.errors.phone }
               },
               [
@@ -17730,7 +17844,7 @@ var render = function() {
             _c(
               "div",
               {
-                staticClass: "form-group",
+                staticClass: "form-group input-group-sm",
                 class: { "has-error": _vm.error && _vm.errors.email }
               },
               [
@@ -18159,6 +18273,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         status: function status(value) {
             if (!value) return 'Закрыто';
             return 'Открыто';
+        },
+        date: function date(value) {
+            if (!value) return;
+            return value.split('-').reverse().join('.');
         }
     }
 });
@@ -18293,7 +18411,9 @@ var render = function() {
               _vm._v(" "),
               _c("div", { staticClass: "col-lg-3" }, [
                 _vm._v(
-                  "\n\t\t\t\t\t\t" + _vm._s(user.created_at) + "\n\t\t\t\t\t"
+                  "\n\t\t\t\t\t\t" +
+                    _vm._s(_vm._f("date")(user.created_at)) +
+                    "\n\t\t\t\t\t"
                 )
               ])
             ])
@@ -19502,6 +19622,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 
@@ -19510,6 +19633,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       project: [],
+      responsible: [],
+      users: [],
       currentTab: 'project-tasks',
       isHidden: false,
       edit_success: false,
@@ -19530,6 +19655,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   mounted: function mounted() {
     this.getProject();
+    this.getUsers();
   },
 
   methods: {
@@ -19537,12 +19663,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var app = this;
       this.axios.get('projects/' + this.$route.params.id).then(function (response) {
         app.project = response.data.data;
+        var res = response.data.data.executors;
+        res.forEach(function (item, i, res) {
+          for (var key in item) {
+            if (key === 'id') {
+              app.responsible.push(item[key]);
+            }
+          }
+        });
       }).catch(function (error) {
         app.error = true;
         app.errors = error.data;
         //             if (error.response.status === 403) {
         // 	this.$router.push({name: '404'});
         // }
+      });
+    },
+    getUsers: function getUsers() {
+      var app = this;
+      this.axios.get('users').then(function (response) {
+        app.users = response.data.data;
+      }).catch(function (error) {
+        app.error = true;
+        app.errors = error.data;
       });
     }
   },
@@ -19694,11 +19837,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['project_item', 'project_responsible', 'project_users'],
   data: function data() {
     return {
-      project: [],
-      users: [],
-      responsible: [],
+      //project: [],
+      project: this.project_item,
+      users: this.project_users,
+      responsible: this.project_responsible,
       isHidden: false,
       edit_success: false,
       error: false,
@@ -19706,8 +19851,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
   mounted: function mounted() {
-    this.getProject();
-    this.getUsers();
+    //this.getProject();
+    //this.getUsers();
   },
 
   methods: {
@@ -19719,7 +19864,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         opened: app.project.opened,
         responsible: app.responsible
       }).then(function (response) {
-        app.project = response.data.data;
+        //app.project = response.data.data;
         app.edit_success = true;
         app.isHidden = false;
       }).catch(function (error) {
@@ -20355,11 +20500,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['project_item', 'project_responsible', 'project_users'],
   data: function data() {
     return {
+      users: this.project_users,
       responsible: [],
       tasks: {},
-      users: [],
       title: 'Новая задача',
       description: '',
       deadline: '',
@@ -20379,7 +20525,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   mounted: function mounted() {
     this.getTasks();
-    this.getUsers();
+    //this.getUsers();
   },
 
   methods: {
@@ -21074,7 +21220,17 @@ var render = function() {
       _vm._v(" "),
       _c(
         "keep-alive",
-        [_c(_vm.currentTabComponent, { tag: "component", staticClass: "tab" })],
+        [
+          _c(_vm.currentTabComponent, {
+            tag: "component",
+            staticClass: "tab",
+            attrs: {
+              project_item: _vm.project,
+              project_responsible: _vm.responsible,
+              project_users: _vm.users
+            }
+          })
+        ],
         1
       )
     ],
@@ -22072,6 +22228,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     editTask: function editTask() {
+      var _this = this;
+
       var app = this;
       this.axios.put('tasks/' + this.$route.params.id, {
         title: app.task.title,
@@ -22086,6 +22244,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         app.task = response.data.data;
         app.edit_task_success = true;
         app.isHidden = false;
+        _this.getTask();
       }).catch(function (error) {
         app.error = true;
         app.errors = error.data;

@@ -112,11 +112,12 @@
 </template>
 <script>
   export default {
+  	props: ['project_item', 'project_responsible', 'project_users'],
   	data() {
   		return {
+  			users: this.project_users,
   			responsible: [],
   			tasks: {},
-  			users: [],
   			title: 'Новая задача',
   			description: '',
   			deadline: '',
@@ -136,7 +137,7 @@
   	},
   	mounted() {
 	  	this.getTasks();
-	  	this.getUsers();
+	  	//this.getUsers();
 	},
   	methods: {
   		addTask() {

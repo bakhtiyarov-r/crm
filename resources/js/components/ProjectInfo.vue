@@ -85,11 +85,13 @@
 </template>
 <script>
   export default {
+    props: ['project_item', 'project_responsible', 'project_users'],
   	data() {
   		return {
-  			project: [],
-        users: [],
-        responsible: [],
+  			//project: [],
+        project: this.project_item,
+        users: this.project_users,
+        responsible: this.project_responsible,
   			isHidden: false,
   			edit_success: false,
         error: false,
@@ -97,8 +99,8 @@
   		}
   	},
   	mounted() {
-	  	this.getProject();
-      this.getUsers();
+	  	//this.getProject();
+      //this.getUsers();
 	},
   	methods: {
   		editProject() {
@@ -109,7 +111,7 @@
 	  			opened: app.project.opened,
           responsible: app.responsible
 	  		}).then(response => {
-	  			app.project = response.data.data;
+	  			//app.project = response.data.data;
 	  			app.edit_success = true;
           app.isHidden = false;
             }).catch(error => {

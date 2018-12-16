@@ -12,7 +12,7 @@ class CompanyPolicy
 
     public function before($user)
     {
-        return $user->hasSudo('owner');
+        return $user->hasSudo();
     }
     
 

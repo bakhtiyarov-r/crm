@@ -66,32 +66,34 @@
                 <p>Данные изменены</p>
             </div>
             <form autocomplete="off" @submit.prevent="update" method="post">
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
-                    <label for="name">Имя</label>
-                    <input type="text" id="name" class="form-control" v-model="name" required>
-                    <span class="help-block" v-if="error && errors.name">{{ errors.name }}</span>
+                <div class="form-row">
+                    <div class="form-group input-group-sm col-sm-6" v-bind:class="{ 'has-error': error && errors.name }">
+                        <label for="name">Имя</label>
+                        <input type="text" id="name" class="form-control" v-model="name" required>
+                        <span class="help-block" v-if="error && errors.name">{{ errors.name }}</span>
+                    </div>
+                    <div class="form-group input-group-sm col-sm-6" v-bind:class="{ 'has-error': error && errors.surname }">
+                        <label for="surname">Фамилия</label>
+                        <input type="text" id="surname" class="form-control" v-model="surname">
+                        <span class="help-block" v-if="error && errors.surname">{{ errors.surname }}</span>
+                    </div>
                 </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.surname }">
-                    <label for="surname">Фамилия</label>
-                    <input type="text" id="surname" class="form-control" v-model="surname">
-                    <span class="help-block" v-if="error && errors.surname">{{ errors.surname }}</span>
-                </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.position }">
+                <div class="form-group input-group-sm" v-bind:class="{ 'has-error': error && errors.position }">
                     <label for="position">Должность</label>
                     <input type="text" id="position" class="form-control" v-model="position">
                     <span class="help-block" v-if="error && errors.position">{{ errors.position }}</span>
                 </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.birthday }">
+                <div class="form-group input-group-sm" v-bind:class="{ 'has-error': error && errors.birthday }">
                     <label for="birthday">День рождения</label>
                     <input type="date" id="birthday" class="form-control" v-model="birthday">
                     <span class="help-block" v-if="error && errors.birthday">{{ errors.birthday }}</span>
                 </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.phone }">
+                <div class="form-group input-group-sm" v-bind:class="{ 'has-error': error && errors.phone }">
                     <label for="phone">Телефон</label>
                     <input type="text" id="phone" class="form-control" v-model="phone">
                     <span class="help-block" v-if="error && errors.phone">{{ errors.phone }}</span>
                 </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.email }">
+                <div class="form-group input-group-sm" v-bind:class="{ 'has-error': error && errors.email }">
                     <label for="email">E-mail</label>
                     <input type="email" id="email" class="form-control" placeholder="user@example.com" v-model="email" required>
                     <span class="help-block" v-if="error && errors.email">{{ errors.email }}</span>

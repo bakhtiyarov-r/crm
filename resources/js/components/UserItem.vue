@@ -58,35 +58,51 @@
                 <p>Данные изменены</p>
             </div>
             <form autocomplete="off" @submit.prevent="update" method="post">
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.user.name }">
-                    <label for="name">Имя</label>
-                    <input type="text" id="name" class="form-control" v-model="user.name" required>
-                    <span class="help-block" v-if="error && errors.user.name">{{ errors.user.name }}</span>
+                <div class="form-row">
+                    <div class="form-group input-group-sm col-sm-6" v-bind:class="{ 'has-error': error && errors.user.name }">
+                        <label for="name">Имя</label>
+                        <input type="text" id="name" class="form-control" v-model="user.name" required>
+                        <span class="help-block" v-if="error && errors.user.name">{{ errors.user.name }}</span>
+                    </div>
+                    <div class="form-group input-group-sm col-sm-6" v-bind:class="{ 'has-error': error && errors.user.profile.surname }">
+                        <label for="surname">Фамилия</label>
+                        <input type="text" id="surname" class="form-control" v-model="user.profile.surname">
+                        <span class="help-block" v-if="error && errors.user.profile.surname">{{ errors.user.profile.surname }}</span>
+                    </div>
                 </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.user.profile.surname }">
-                    <label for="surname">Фамилия</label>
-                    <input type="text" id="surname" class="form-control" v-model="user.profile.surname">
-                    <span class="help-block" v-if="error && errors.user.profile.surname">{{ errors.user.profile.surname }}</span>
-                </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.user.profile.position }">
+                <div class="form-group input-group-sm" v-bind:class="{ 'has-error': error && errors.user.profile.position }">
                     <label for="position">Должность</label>
                     <input type="text" id="position" class="form-control" v-model="user.profile.position">
                     <span class="help-block" v-if="error && errors.user.profile.position">{{ errors.user.profile.position }}</span>
                 </div>
-                <div v-if="this.$auth.user().slug == 'owner'" class="form-group" v-bind:class="{ 'has-error': error && errors.user.name }">
+                <div class="form-group">
                     Выбрать роль:
-                    <div>
-                        <input type="radio" id="one-user" value="1" v-model="user.role_id">
-                        <label for="one-user">User</label>
-                        <br>
-                        <input type="radio" id="one-member" value="2" v-model="user.role_id">
-                        <label for="one-member">Member</label>
-                        <br>
-                        <input type="radio" id="one-manager" value="3" v-model="user.role_id">
-                        <label for="one-manager">Manager</label>
-                        <br>
-                        <input type="radio" id="one-admin" value="4" v-model="user.role_id">
-                        <label for="one-admin">Admin</label>
+                    <div v-if="this.$auth.user().sudo" class="form-row" v-bind:class="{ 'has-error': error && errors.user.name }">
+                        
+                        <div  class="form-group col-sm-6">
+                            <div class="form-sub-group">
+                                <label for="one-user">Пользователь</label>
+                                <input type="radio" id="one-user" value="1" v-model="user.role_id">
+                            </div>
+                            <div class="form-sub-group">
+                                <label for="one-member">Участник</label>
+                                <input type="radio" id="one-member" value="2" v-model="user.role_id">
+                            </div>
+                            <div class="form-sub-group">
+                                <label for="one-manager">Менеджер</label>
+                                <input type="radio" id="one-manager" value="3" v-model="user.role_id">
+                            </div>
+                            <div class="form-sub-group">
+                                <label for="one-admin">Администратор</label>
+                                <input type="radio" id="one-admin" value="4" v-model="user.role_id">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <div class="form-sub-group">
+                                <label for="sudo-user">Супер администратор</label>
+                                <input type="checkbox" id="sudo-user" v-model="user.sudo">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-default">Отправить</button>
@@ -127,7 +143,8 @@
                     name: app.user.name,
                     surname: app.user.profile.surname,
                     position: app.user.profile.position,
-                    role_id: app.user.role_id
+                    role_id: app.user.role_id,
+                    sudo: app.user.sudo
                 }).then(response => {
                     app.success = true
                 }).catch(error => {

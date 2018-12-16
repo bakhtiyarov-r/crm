@@ -48,7 +48,7 @@
 						{{user.profile.position}}
 					</div>
 					<div class="col-lg-3">
-						{{user.created_at}}
+						{{user.created_at | date}}
 					</div>
 				</div>
 			</div>
@@ -180,7 +180,11 @@
   		status(value) {
   			if (!value) return 'Закрыто';
   			return 'Открыто';
-  		}
+  		},
+      date(value) {
+        if (!value) return;
+        return value.split('-').reverse().join('.');
+      }
   	}
   }
 </script>

@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role_id',
+        'name', 'email', 'password', 'role_id', 'sudo',
     ];
 
     /**
@@ -28,9 +28,14 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function hasSudo($permission)
+    public function isExecutor($collection)
     {
-        if ($this->slug == $permission) {
+        return $collection->executors->contains('id', $this->id);
+    }
+
+    public function hasSudo()
+    {
+        if ($this->sudo) {
             return true;
         }
         

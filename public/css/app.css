@@ -10482,6 +10482,11 @@ a.text-dark:focus {
   color: #fff;
 }
 
+input[type="radio"],
+input[type="checkbox"] {
+  width: auto;
+}
+
 label {
   margin: 0;
 }

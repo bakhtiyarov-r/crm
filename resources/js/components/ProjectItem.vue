@@ -25,7 +25,10 @@
 		<keep-alive>
 		    <component
 		      v-bind:is="currentTabComponent"
-		      class="tab"
+		      class="tab" 
+		      v-bind:project_item="project" 
+		      v-bind:project_responsible="responsible" 
+		      v-bind:project_users="users"
 		    ></component>
 		</keep-alive>
 	</div>
@@ -38,6 +41,8 @@ import ProjectTasks from './ProjectTasks'
   	data() {
   		return {
   			project: [],
+  			responsible: [],
+  			users: [],
   			currentTab: 'project-tasks',
   			isHidden: false,
   			edit_success: false,
@@ -57,18 +62,36 @@ import ProjectTasks from './ProjectTasks'
 
   	mounted() {
 	  	this.getProject();
+	  	this.getUsers();
 	},
   	methods: {
 	  	getProject() {
   			var app = this;
 	  		this.axios.get('projects/' + this.$route.params.id).then(response => {
 	  			app.project = response.data.data;
+	  			let res = response.data.data.executors;
+	            res.forEach(function(item, i, res){
+	              for( let key in item ) {
+	                if (key === 'id') {
+	                  app.responsible.push(item[key]);
+	                }
+	              }
+	            })
             }).catch(error => {
                 app.error = true;
                 app.errors = error.data;
     //             if (error.response.status === 403) {
 				// 	this.$router.push({name: '404'});
 				// }
+            });  
+	  	},
+	  	getUsers() {
+  			var app = this;
+	  		this.axios.get('users').then(response => {
+	  			app.users = response.data.data;
+            }).catch(error => {
+                app.error = true;
+                app.errors = error.data;
             });  
 	  	}
   	},

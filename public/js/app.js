@@ -26132,23 +26132,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 app.success = true;
             }).catch(function (error) {
                 app.error = true;
-                app.errors = resp.response.data.errors;
+                app.errors = error.data;
             });
         },
         handleFilesUpload: function handleFilesUpload() {
             this.uploaded_doc = this.$refs.document.files;
         },
         removeDocument: function removeDocument() {
-            var _this2 = this;
-
             var app = this;
+            console.log(app.remove_files);
             this.axios.put(this.$route.params.id + '/document', {
                 documents: app.remove_files
             }).then(function (response) {
-                _this2.getTask();
+                app.getTask();
+                app.remove_files = [];
             }).catch(function (error) {
                 app.error = true;
-                app.errors = resp.response.data.errors;
+                app.errors = error.data;
             });
         },
         getExtention: function getExtention(value) {
@@ -26156,22 +26156,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             switch (fileExt) {
                 case 'doc':
                 case 'docx':
-                    return 'word';
+                    return 'file-word';
                     break;
                 case 'xls':
                 case 'xlsx':
-                    return 'excel';
+                    return 'file-excel';
                     break;
                 case 'jpeg':
                 case 'png':
                 case 'psd':
-                    return 'image';
+                    return 'file-image';
                     break;
                 case 'pdf':
-                    return 'pdf';
+                    return 'file-pdf';
                     break;
                 default:
-                    return;
+                    return 'file';
             }
         }
     },
@@ -26244,9 +26244,7 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "col-lg-1 file-ext" }, [
-                _c("i", {
-                  class: "far fa-file-" + _vm.getExtention(document.link)
-                })
+                _c("i", { class: "far fa-" + _vm.getExtention(document.link) })
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "col-lg-10" }, [

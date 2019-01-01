@@ -7,7 +7,7 @@
                         <input type="checkbox" class="form-control" :value="document.id" v-model="remove_files">
                     </div>
                     <div class="col-lg-1 file-ext">
-                        <i :class="'far fa-file-' + getExtention(document.link)"></i>
+                        <i :class="'far fa-' + getExtention(document.link)"></i>
                     </div>
 					<div class="col-lg-10">
 						<a :href="'/storage/' + document.link">{{document.doc_name}}</a>
@@ -87,7 +87,7 @@
                     app.success = true
                 }).catch(error => {
                     app.error = true;
-                    app.errors = resp.response.data.errors;
+                    app.errors = error.data;
                 });    
             },
             handleFilesUpload() {
@@ -95,13 +95,15 @@
             },
             removeDocument() {
                 var app = this;
+                console.log(app.remove_files)
                 this.axios.put(this.$route.params.id + '/document', {
                     documents: app.remove_files
                 }).then(response => {
-                    this.getTask();
+                    app.getTask();
+                    app.remove_files = [];
                 }).catch(error => {
                     app.error = true;
-                    app.errors = resp.response.data.errors;
+                    app.errors = error.data;
                 });
             },
             getExtention(value) {
@@ -109,22 +111,22 @@
                 switch (fileExt) {
                     case 'doc':
                     case 'docx':
-                        return 'word';
+                        return 'file-word';
                         break;
                     case 'xls':
                     case 'xlsx':
-                        return 'excel';
+                        return 'file-excel';
                         break;
                     case 'jpeg':
                     case 'png':
                     case 'psd':
-                        return 'image';
+                        return 'file-image';
                         break;
                     case 'pdf':
-                        return 'pdf';
+                        return 'file-pdf';
                         break;
                     default: 
-                        return;
+                        return 'file';
                 }
             }
         },

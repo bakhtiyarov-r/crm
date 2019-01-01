@@ -10,15 +10,19 @@ class DocumentController extends Controller
 {
 
     public function store(Request $request, Task $task){
+
+        // $project = $task->project_id;
+        // $company = $task->company_id;
         
         foreach ( $request->file('files') as $file) {
             $fileName = $file->getClientOriginalName();
-            //dd($name);
         	$path = $file->store(
 	            'documents'
 	        );
-            
+
 	        $task->documents()->create([
+                //'company_id' => $company,
+                //'project_id' => $project,
                 'doc_name' => $fileName,
                 'link' => $path,
 			]);

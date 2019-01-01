@@ -15,6 +15,8 @@ class CreateDocumentsTable extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('company_id')->nullable();
+            $table->unsignedInteger('project_id')->nullable();
             $table->unsignedInteger('task_id')->nullable();
             $table->string('link');
             $table->string('doc_name');

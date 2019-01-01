@@ -6,7 +6,10 @@
                     <div class="col-lg-1">
                         <input type="checkbox" class="form-control" :value="document.id" v-model="remove_files">
                     </div>
-					<div class="col-lg-11">
+                    <div class="col-lg-1 file-ext">
+                        <i :class="'far fa-file-' + getExtention(document.link)"></i>
+                    </div>
+					<div class="col-lg-10">
 						<a :href="'/storage/' + document.link">{{document.doc_name}}</a>
 					</div>
 				</div>
@@ -100,6 +103,29 @@
                     app.error = true;
                     app.errors = resp.response.data.errors;
                 });
+            },
+            getExtention(value) {
+                let fileExt = value.split('.').pop().toLowerCase();
+                switch (fileExt) {
+                    case 'doc':
+                    case 'docx':
+                        return 'word';
+                        break;
+                    case 'xls':
+                    case 'xlsx':
+                        return 'excel';
+                        break;
+                    case 'jpeg':
+                    case 'png':
+                    case 'psd':
+                        return 'image';
+                        break;
+                    case 'pdf':
+                        return 'pdf';
+                        break;
+                    default: 
+                        return;
+                }
             }
         },
         filters: {

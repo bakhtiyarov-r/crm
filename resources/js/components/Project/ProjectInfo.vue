@@ -1,5 +1,3 @@
-
-
 // resources/assets/js/views/ProjectInfo.vue
 
 <template>
@@ -32,8 +30,8 @@
 						</div>
 					</div>
 					<div class="action__btns">
-            <button-orange btnClass="btn_orange task_edit" @click.native="isHidden = true" btnTitle="Править"></button-orange>
-            <button-orange btnClass="btn_orange task_delete" @click.native="deleteProject" btnTitle="Удалить"></button-orange>
+            <button-orange btnClass="btn_orange task_edit" @click.native="isHidden = true" btnTitle="Править проект"></button-orange>
+            <button-orange btnClass="btn_orange task_delete" @click.native="deleteProject" btnTitle="Удалить проект"></button-orange>
 					</div>
 				</div>
 			</div>
@@ -84,77 +82,54 @@
 	</div>
 </template>
 <script>
+  import { mapState } from 'vuex';
   export default {
-    props: ['project_item', 'project_responsible', 'project_users'],
   	data() {
   		return {
-  			//project: [],
-        project: this.project_item,
-        users: this.project_users,
-        responsible: this.project_responsible,
   			isHidden: false,
-  			edit_success: false,
-        error: false,
-        errors: {}
   		}
   	},
-  	mounted() {
-	  	//this.getProject();
-      //this.getUsers();
-	},
   	methods: {
   		editProject() {
-  			var app = this;
-  			this.axios.put('projects/' + this.$route.params.id, {
-	  			title: app.project.title,
-	  			description: app.project.description,
-	  			opened: app.project.opened,
-          responsible: app.responsible
-	  		}).then(response => {
-	  			//app.project = response.data.data;
-	  			app.edit_success = true;
-          app.isHidden = false;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+	        this.$store.dispatch('editProject', {
+	            data: {
+					title: this.project.title,
+					description: this.project.description,
+					opened: this.project.opened,
+					responsible: this.responsible
+	            },
+	            	project_id: this.$route.params.id,
+	        	},
+	        );
+        	this.responsible;
   		},
-	  	getProject() {
-  			var app = this;
-	  		this.axios.get('projects/' + this.$route.params.id).then(response => {
-  	  			app.project = response.data.data;
-            let res = response.data.data.executors;
-            res.forEach(function(item, i, res){
-              for( let key in item ) {
-                if (key === 'id') {
-                  app.responsible.push(item[key]);
-                }
-              }
-            })
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
-	  	},
-      getUsers() {
-        var app = this;
-        this.axios.get('users').then(response => {
-            app.users = response.data.data;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
-      },
 	  	deleteProject() {
-  			var app = this;
-	  		this.axios.delete('projects/' + this.$route.params.id).then(response => {
-	  			window.location = response.data.redirect;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+	        var confirmDelete = confirm("Удалить проект и связанные задачи?");
+	        if (confirmDelete) {
+	          this.$store.dispatch('deleteProject', {
+	              project_id: this.$route.params.id
+	            }
+	          );
+	        }
 	  	}
   	},
+    computed: {
+      responsible: {
+        get () {
+          return this.$store.state.projects.responsible
+        },
+        set (value) {
+          this.$store.commit('addResponsible', value)
+        }
+      },
+      ...mapState({
+          project: state => state.projects.item,
+          error: state => state.projects.error,
+          errors: state => state.projects.errors,
+          edit_success: state => state.projects.edit_success,
+          users: state => state.users.items,
+        }),
+    },
   	filters: {
   		status(value) {
   			if (!value) return 'Закрыто';

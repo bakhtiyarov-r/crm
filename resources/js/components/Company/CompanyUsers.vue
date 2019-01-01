@@ -61,7 +61,7 @@
 			<div class="alert alert-danger" v-if="error && !add_user_success">
                 <p>При добавлении произошла ошибка</p>
             </div>
-            <div class="alert alert-success" v-if="add_user_success">
+            <div class="alert alert-success" v-if="add_success">
                 <p>Сотрудник добавлен</p>
             </div>
             <form autocomplete="off" @submit.prevent="addUser" method="post">
@@ -108,10 +108,10 @@
 	</div>
 </template>
 <script>
+  import { mapState } from 'vuex';
   export default {
   	data() {
   		return {
-  			users: [],
   			name: 'Новый сотрудник',
   			surname: '',
   			email: '',
@@ -119,48 +119,37 @@
   			password: '',
   			birthday: '',
   			position: '',
-            error: false,
-            errors: {},
-            add_user_success: false,
-            isHidden: false,
-            user_name_filter: '',
-            user_position_filter: 'all',
-            status_filter: ''
+        isHidden: false,
+        user_name_filter: '',
+        user_position_filter: 'all',
   		}
   	},
   	mounted() {
-	  	this.getUsers();
-	},
+      this.$store.dispatch('getUsers');
+    },
   	methods: {
   		addUser() {
-  			var app = this;
-	  		this.axios.post('users', {
-	  			name: app.name,
-	  			surname: app.surname,
-	  			email: app.email,
-	  			phone: app.phone,
-	  			position: app.position,
-	  			birthday: app.birthday,
-	  			password: app.password
-	  		}).then(response => {
-	  			this.getUsers();
-	  			app.add_user_success = true;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+        this.$store.dispatch('addUser', {
+            data: {
+              name: this.name,
+              surname: this.surname,
+              email: this.email,
+              phone: this.phone,
+              position: this.position,
+              birthday: this.birthday,
+              password: this.password
+            }
+          },
+        );
 	  	},
-	  	getUsers() {
-  			var app = this;
-	  		this.axios.get('users').then(response => {
-	  			app.users = response.data.data;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
-	  	}
   	},
     computed: {
+        ...mapState({
+          users: state => state.users.items,
+          error: state => state.users.error,
+          errors: state => state.users.errors,
+          add_success: state => state.users.add_success,
+        }),
         usersList() {
         	var app = this;
             var userName = this.user_name_filter.toLowerCase();
@@ -173,7 +162,7 @@
 	        			return elem.id == app.user_position_filter;
 	        		}
 	        	})
-            }
+          }
         }
     },
   	filters: {

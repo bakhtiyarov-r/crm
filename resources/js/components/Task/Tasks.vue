@@ -28,7 +28,12 @@
 									{{this.getCountItems('immediate')}}
 								</span>
 							</span>
-							<span class="status_item" @click="status_filter = 'closed'" v-bind:class="{ active: status_filter == 'closed'}">Выполнены 
+							<span class="status_item" @click="status_filter = 'done'" v-bind:class="{ active: status_filter == 'done'}">На проверке 
+								<span class="status_count">
+									{{this.getCountItems('done')}}
+								</span>
+							</span>
+							<span class="status_item" @click="status_filter = 'closed'" v-bind:class="{ active: status_filter == 'closed'}">Закрыты 
 								<span class="status_count">
 									{{this.getCountItems('closed')}}
 								</span>
@@ -136,7 +141,6 @@
   			var app = this;
 	  		this.axios.get('tasks').then(response => {
 	  			app.tasks = response.data.data;
-	  			//console.log(app.tasks)
             }).catch(error => {
                 app.error = true;
                 app.errors = error.data;
@@ -149,8 +153,9 @@
         			return true;
         		} else if (count == 'closed') {
         			return !elem.opened;
-        		}
-        		else {
+        		} else if (count == 'opened') {
+        			return elem[count] == true && elem.done == false;
+        		}else {
         			return elem[count] == true; 
         		} 
         	}).length
@@ -182,9 +187,12 @@
             			return true;
             		} else if(app.status_filter == 'closed') {
             				return !elem.opened;
-            		}
-            		else {
-            			return elem[app.status_filter];
+            		} else if(app.status_filter == 'done') {
+            				return elem.done;
+            		} else if(app.status_filter == 'canceled') {
+            				return elem.canceled;
+            		} else {
+            			return elem[app.status_filter] && !elem.done && !elem.canceled;
             		}
             	})
         },

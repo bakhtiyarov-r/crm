@@ -130,7 +130,7 @@
                 var app = this;
                 var formData = new FormData();
                 formData.append('avatar', app.uploadedAvatar);
-                this.axios.post('user/avatar', formData, {
+                this.axios.post('profile/avatar', formData, {
                     headers: {
                       'Content-Type': 'multipart/form-data'
                     }
@@ -147,7 +147,7 @@
             },
             update() {
                 var app = this
-                this.axios.put('user/edit', {
+                this.axios.put('profile/edit', {
                     name: app.name,
                     surname: app.surname,
                     email: app.email,

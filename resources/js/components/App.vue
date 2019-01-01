@@ -15,20 +15,7 @@
           </div>
           <div class="col-lg-5" style="display:flex; justify-content: flex-end;">
             <div class="user">
-              <div v-if="$auth.check()" class="user_notification">
-                <img src="../../assets/ic-notifications-black-24-px.png">
-                <div class="user_notification-full" :class="{full: $auth.user().notifications.length > 0}"></div>
-                <div class="notification" v-if="$auth.user().notifications.length > 0">
-                  <div class="notification__item" v-for="notification in $auth.user().notifications">
-                    <div class="notification__title">
-                      {{notification.data.topic}}
-                    </div>
-                    <div class="notification__link">
-                      <a :href="notification.data.link">{{notification.data.title}}</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              
               <div class="user_name">
                 <router-link :to="{ name: 'login' }" v-if="!$auth.check()">Войти </router-link>
                 <router-link :to="{ name: 'register' }" v-if="!$auth.check()">Регистрация </router-link>
@@ -42,7 +29,22 @@
                 </div>
               </div>
 
-              <div class="user_help">
+              <div v-if="$auth.check()" class="user_notification hover-icon">
+                <img src="../../assets/ic-notifications-black-24-px.png">
+                <div class="user_notification-full" :class="{full: $auth.user().notifications.length > 0}"></div>
+                <div class="notification" v-if="$auth.user().notifications.length > 0">
+                  <div class="notification__item" v-for="notification in $auth.user().notifications">
+                    <div class="notification__title">
+                      {{notification.data.topic}}
+                    </div>
+                    <div class="notification__link">
+                      <a :href="notification.data.link">{{notification.data.title}}</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="user_help hover-icon">
                 <a href="#"><img src="../../assets/ic-help-outline-24-px-copy-3.png"></a>
               </div>             
             </div>  

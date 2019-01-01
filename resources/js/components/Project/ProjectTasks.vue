@@ -16,7 +16,7 @@
 						<div class="filter_name" >
 							<select v-model="project_author"> 
 								<option value="all">Все</option>
-								<option v-for="author in userList" v-bind:value="author.user.id">{{ author.user.name }}&nbsp;{{ author.user.profile.surname }}</option>
+								<option v-for="author in userListTask" v-bind:value="author.user.id">{{ author.user.name }}&nbsp;{{ author.user.profile.surname }}</option>
 							</select>
 							<!-- <a href="#" v-for="author in tasks.tasks">{{ author.user.name }}&nbsp;{{ author.user.profile.surname }}&nbsp;&nbsp;</a> -->
 						</div>
@@ -24,7 +24,7 @@
 				</div>  	
 			</div>	
 			<div class="action__btns">
-				<button-orange btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Добавить"></button-orange>
+				<button-orange btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Создать новую задачу"></button-orange>
 			</div>
 		</section>
 		<section>
@@ -44,7 +44,7 @@
 					</div>
 				</div>
 				<div class="row tasks_item" v-for="task in taskList" v-bind:class="{ done: !task.opened, red: Date.parse(task.deadline) < Date.parse(new Date()) }" :key="task.id">
-					<div class="col-lg-2">
+					<div class="col-lg-2" v-bind:class="{important: task.immediate}">
 						{{task.opened | status}}
 					</div>
 					<div class="col-lg-5">
@@ -64,10 +64,10 @@
 			<div class="title">
 				<h2 >Добавить задачу</h2>
 			</div>
-			<div class="alert alert-danger" v-if="error && !add_task_success">
+			<div class="alert alert-danger" v-if="error && !add_success">
                 <p>При добавлении произошла ошибка</p>
             </div>
-            <div class="alert alert-success" v-if="add_task_success">
+            <div class="alert alert-success" v-if="add_success">
                 <p>Задача добавлена</p>
             </div>
             <form autocomplete="off" @submit.prevent="addTask" method="post">
@@ -111,77 +111,52 @@
 	</div>
 </template>
 <script>
+	import { mapState, mapGetters } from 'vuex';
   export default {
-  	props: ['project_item', 'project_responsible', 'project_users'],
   	data() {
   		return {
-  			users: this.project_users,
   			responsible: [],
-  			tasks: {},
   			title: 'Новая задача',
   			description: '',
   			deadline: '',
   			immediate: false,
   			drafts: false,
-            error: false,
-            errors: {},
-            add_task_success: false,
             isHidden: false,
             project_author: 'all',
             task_name_filter: '',
-            personal_chkd: '',
-            night_chkd: '',
-            immediate_chkd: '',
-            status_filter: ''
   		}
   	},
-  	mounted() {
-	  	this.getTasks();
-	  	//this.getUsers();
-	},
   	methods: {
   		addTask() {
-  			var app = this;
-	  		this.axios.post(this.$route.params.id + '/tasks', {
-	  			title: app.title,
-	  			description: app.description,
-	  			deadline: app.deadline,
-	  			immediate: app.immediate,
-	  			drafts: app.drafts,
-	  			responsible: app.responsible
-	  		}).then(response => {
-	  			this.getTasks();
-	  			app.add_task_success = true;
-	  			app.isHidden = false;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+  			this.$store.dispatch('addTask', {
+	            data: {
+	            	title: this.title,
+		  			description: this.description,
+		  			deadline: this.deadline,
+		  			immediate: this.immediate,
+		  			drafts: this.drafts,
+		  			responsible: this.responsible
+	            },
+		            project_id: this.$route.params.id,
+		        },
+	        ); 
 	  	},
-	  	getTasks() {
-  			var app = this;
-	  		this.axios.get('projects/' + this.$route.params.id + '/tasks').then(response => {
-	  			app.tasks = response.data.data;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
-	  	},
-	  	getUsers() {
-  			var app = this;
-	  		this.axios.get('users').then(response => {
-	  			app.users = response.data.data;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
-	  	}
   	},
     computed: {
+    	...mapState({
+        	project: state => state.projects.item,
+			error: state => state.projects.error,
+			errors: state => state.projects.errors,
+			add_success: state => state.projects.add_success,
+        	users: state => state.users.items,
+        }),
+        ...mapGetters([
+    		'userListTask'
+    	]),
     	sort() {
 			var app = this;
-			if (app.tasks.tasks) {
-				return this.tasks.tasks
+			if (app.project.tasks) {
+				return this.project.tasks
 					.sort((a, b) => a.deadline > b.deadline? 1 : -1)
 					.sort((a, b) => a.opened == b.opened? 0 : a.opened? -1 : 1);
 			}
@@ -200,22 +175,6 @@
 	        	})
             }
         },
-        userList() {
-        	var app = this;
-        	var pr = app.tasks.tasks;
-        	var result = [];
-        	if (app.tasks.tasks) {
-				nextInput:
-				    for (var i = 0; i < pr.length; i++) {
-				    	var str = pr[i].user.id; // для каждого элемента
-				    	for (var j = 0; j < result.length; j++) { // ищем, был ли он уже?
-				        	if (result[j].user.id == str) continue nextInput; // если да, то следующий
-				    	}
-				    	result.push(pr[i]);
-				    }
-				return result;
-			}
-        }
     },
   	filters: {
   		status(value) {

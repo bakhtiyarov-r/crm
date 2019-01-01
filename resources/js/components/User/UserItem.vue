@@ -55,7 +55,7 @@
                 <p>При изменении произошла ошибка</p>
             </div>
             <div class="alert alert-success" v-if="success">
-                <p>Данные изменены</p>
+                <p>Данные успешно изменены</p>
             </div>
             <form autocomplete="off" @submit.prevent="update" method="post">
                 <div class="form-row">
@@ -113,53 +113,46 @@
     </div>
 </template>
 <script> 
+    import { mapState } from 'vuex';
     export default {
         data(){
             return {
-                user: {},
                 isHidden: false,
-                edit_success: false,
-                error: false,
-                errors: {},
-                success: false
             };
         },
         mounted() {
-            this.getUser();
+            this.$store.dispatch('getUser', this.$route.params.id);
+        },
+        computed: {
+            ...mapState({
+                user: state => state.users.item,
+                error: state => state.users.error,
+                errors: state => state.users.errors,
+                success: state => state.users.success,
+            }),
         },
         methods: {
-            getUser() {
-                var app = this;
-                this.axios.get('users/' + this.$route.params.id).then(response => {
-                    app.user = response.data.data;
-                }).catch(error => {
-                    app.error = true;
-                    app.errors = error.data;
-                });  
-            },
             update() {
-                var app = this
-                this.axios.put('users/' + this.$route.params.id, {
-                    name: app.user.name,
-                    surname: app.user.profile.surname,
-                    position: app.user.profile.position,
-                    role_id: app.user.role_id,
-                    sudo: app.user.sudo
-                }).then(response => {
-                    app.success = true
-                }).catch(error => {
-                    app.error = true;
-                    app.errors = resp.response.data.errors;
-                });                
+                this.$store.dispatch('editUser', {
+                    data: {
+                        name: this.user.name,
+                        surname: this.user.profile.surname,
+                        position: this.user.profile.position,
+                        role_id: this.user.role_id,
+                        sudo: this.user.sudo
+                    },
+                        user_id: this.$route.params.id,
+                    },
+                );           
             },
             deleteUser() {
-                var app = this;
-                this.axios.delete('users/' + this.$route.params.id).then(response => {
-                    window.location = response.data.redirect;
-                }).catch(error => {
-                    app.error = true;
-                    app.errors = error.data;
-                });  
+                var confirmDelete = confirm("Удалить пользователя?");
+                if (confirmDelete) {
+                    this.$store.dispatch('deleteUser', {
+                            user_id: this.$route.params.id
+                        }
+                    );
+                }  
             }
         },
         filters: {

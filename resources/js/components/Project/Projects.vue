@@ -15,7 +15,7 @@
 						
 					</div>
 					<div class="col-md-3 col-lg-2">
-						<button-orange btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Добавить"></button-orange>
+						<button-orange btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Создать новый проект"></button-orange>
 					</div>
 				</div>	
 			</div>		
@@ -75,10 +75,10 @@
 			<div class="title">
 				<h2 >Добавить проект</h2>
 			</div>
-			<div class="alert alert-danger" v-if="error && !add_project_success">
+			<div class="alert alert-danger" v-if="error && !add_success">
                 <p>При добавлении произошла ошибка</p>
             </div>
-            <div class="alert alert-success" v-if="add_project_success">
+            <div class="alert alert-success" v-if="add_success">
                 <p>Проект добавлен</p>
             </div>
             <form autocomplete="off" @submit.prevent="addProject" method="post">
@@ -106,98 +106,67 @@
 	</div>
 </template>
 <script>
-  export default {
-  	data() {
-  		return {
-  			projects: [],
-  			users: [],
-  			responsible: [],
-  			title: 'Новый проект',
-  			description: '',
-            error: false,
-            errors: {},
-            add_project_success: false,
-            isHidden: false,
-            project_name_filter: '',
-            project_author: 'all',
-            status_filter: ''
-  		}
-  	},
-  	mounted() {
-	  	this.getProjects();
-	  	this.getUsers();
-	},
-  	methods: {
-  		addProject() {
-  			var app = this;
-	  		this.axios.post(this.$auth.user().company_id + '/projects', {
-	  			title: app.title,
-	  			description: app.description,
-	  			responsible: app.responsible
-	  		}).then(response => {
-	  			this.getProjects();
-	  			app.add_project_success = true;
-	  			app.isHidden = false;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+	import { mapState, mapGetters } from 'vuex';
+	export default {
+	  	data() {
+	  		return {
+	  			responsible: [],
+	  			title: 'Новый проект',
+	  			description: '',
+	            isHidden: false,
+	            project_name_filter: '',
+	            project_author: 'all',
+	  		}
 	  	},
-	  	getProjects() {
-  			var app = this;
-	  		this.axios.get('projects').then(response => {
-	  			app.projects = response.data.data;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+	  	mounted() {
+		  	this.$store.dispatch('getProjects');
+		  	this.$store.dispatch('getUsers');
+		},
+	  	methods: {
+	  		addProject() {
+	  			this.$store.dispatch('addProject', {
+	  					data: {
+			  				title: this.title,
+				  			description: this.description,
+				  			responsible: this.responsible,
+				  		},
+			  			company: this.$auth.user().company_id,
+			  		},
+			  			
+		  		);
+	  		}
 	  	},
-	  	getUsers() {
-  			var app = this;
-	  		this.axios.get('users').then(response => {
-	  			app.users = response.data.data;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+	    computed: {
+	    	...mapState({
+	    		projects: state => state.projects.items,
+	    		error: state => state.projects.error,
+	    		errors: state => state.projects.errors,
+	    		add_success: state => state.projects.add_success,
+	    		users: state => state.users.items,
+	    	}),
+	    	...mapGetters([
+	    		'userList'
+	    	]),
+	        projectList() {
+	        	var app = this;
+	            var projectName = this.project_name_filter.toLowerCase();
+	            if (this.projects) {
+	            	return this.projects.filter(elem => elem.title.toLowerCase().indexOf(projectName) > -1)
+	            	.filter(elem => {
+	            		if(app.project_author == 'all') {
+	            			return true;
+	            		} else {
+	            			return elem.user.name + ' ' + elem.user.profile.surname == app.project_author;
+	            		}
+	            	})
+	            }
+	        },
+	    },
+	  	filters: {
+	  		status(value) {
+	  			if (!value) return 'Закрыто';
+	  			return 'Открыто';
+	  		}
 	  	}
-  	},
-    computed: {
-        projectList() {
-        	var app = this;
-            var projectName = this.project_name_filter.toLowerCase();
-            if (app.projects) {
-            	return app.projects.filter(elem => elem.title.toLowerCase().indexOf(projectName) > -1)
-            	.filter(elem => {
-            		if(app.project_author == 'all') {
-            			return true;
-            		} else {
-            			return elem.user.name + ' ' + elem.user.profile.surname == app.project_author;
-            		}
-            	})
-            }
-        },
-        userList() {
-        	var app = this;
-        	var pr = app.projects;
-        	var result = [];
-
-			nextInput:
-			    for (var i = 0; i < pr.length; i++) {
-			    	var str = pr[i].user.id; // для каждого элемента
-			    	for (var j = 0; j < result.length; j++) { // ищем, был ли он уже?
-			        	if (result[j].user.id == str) continue nextInput; // если да, то следующий
-			    	}
-			    	result.push(pr[i]);
-			    }
-			return result;
-        }
-    },
-  	filters: {
-  		status(value) {
-  			if (!value) return 'Закрыто';
-  			return 'Открыто';
-  		}
-  	}
-  }
+	}
 </script>

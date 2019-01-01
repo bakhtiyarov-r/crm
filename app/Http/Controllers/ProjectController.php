@@ -47,13 +47,14 @@ class ProjectController extends Controller
         $project->user_id = Auth::user()->id;
         $company->projects()->save($project);
         $project->executors()->sync($request->responsible);
+        $data = $company->projects->load('user.profile');
         $resp = $request->responsible;
         $users = User::find($resp);
         Notification::send($users, new ProjectAddedToExecutor($project));
 
         return response([
             'status' => 'success',
-            'data' => $project
+            'data' => $data
            ], 200);
     }
 
@@ -65,7 +66,7 @@ class ProjectController extends Controller
      */
     public function show(ViewProjectRequest $request, Project $project)
     {
-        $project = $project->load(['user.profile', 'executors.profile']);
+        $project = $project->load(['user.profile', 'executors.profile', 'tasks.user.profile']);
         return response([
             'status' => 'success',
             'data' => $project
@@ -83,12 +84,13 @@ class ProjectController extends Controller
     {
         $project->fill($request->all())->save();
         $project->executors()->sync($request->responsible);
+        $data = $project->load(['user.profile', 'executors.profile', 'tasks.user.profile']);
         $resp = $request->responsible;
         $users = User::find($resp);
         Notification::send($users, new ProjectEdited($project));
         return response([
             'status' => 'success',
-            'data' => $project
+            'data' => $data
         ]);
     }
 
@@ -106,17 +108,5 @@ class ProjectController extends Controller
                 'redirect' => '/projects'
             ]);
     }
-
-
-    public function showTasks(ViewProjectRequest $request, Project $project)
-    {
-        $project = $project->load('tasks.user.profile');
-        
-        return response([
-            'status' => 'success',
-            'data' => $project
-        ]);
-    }
-
     
 }

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Notifications\TaskAddedToExecutor;
 use App\Notifications\TaskEdited;
 use App\Notifications\TaskClosed;
+use App\Notifications\TaskDone;
 
 class TaskController extends Controller
 {
@@ -58,13 +59,14 @@ class TaskController extends Controller
         $task->company_id = Auth::user()->company_id;
         $project->tasks()->save($task);
         $task->executors()->sync($request->responsible);
+        $data = $project->load(['user.profile', 'executors.profile', 'tasks.user.profile']);
         $resp = $request->responsible;
         $users = User::find($resp);
         Notification::send($users, new TaskAddedToExecutor($task));
 
         return response([
             'status' => 'success',
-            'data' => $task
+            'data' => $data
            ], 200);
     }
 
@@ -95,6 +97,35 @@ class TaskController extends Controller
         
     }
 
+    public function doneTask(UpdateTaskRequest $request, Task $task)
+    {
+        $task->fill($request->all())->save();
+        $user = User::find($task->user_id);
+        $users = $task->executors;
+
+        if ($task->done) {
+            Notification::send($user, new TaskDone($task));
+        } else {
+            Notification::send($users, new TaskDone($task));
+        }
+
+        return response([
+            'status' => 'success'
+        ]);
+    }
+
+    public function closeTask(UpdateTaskRequest $request, Task $task)
+    {
+        $task->fill($request->all())->save();
+        $users = $task->executors;
+
+        Notification::send($users, new TaskClosed($task));
+
+        return response([
+            'status' => 'success'
+        ]);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -110,13 +141,8 @@ class TaskController extends Controller
         $users = User::find($resp);
         Notification::send($users, new TaskEdited($task));
 
-        if ($task->opened == false) {
-            Notification::send($users, new TaskClosed($task));
-        }
-
         return response([
-            'status' => 'success',
-            'data' => $task
+            'status' => 'success'
         ]);
     }
 

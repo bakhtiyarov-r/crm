@@ -2,27 +2,32 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import {store} from './store';
 
 Vue.use(VueRouter)
 Vue.use(VueAxios, axios);
 axios.defaults.baseURL = 'http://mysite.local/api';
 
 import App from './components/App'
-import UserItem from './components/UserItem'
-import Dashboard from './components/Dashboard'
-import Company from './components/Company'
-import Projects from './components/Projects'
-import ProjectItem from './components/ProjectItem'
-import Tasks from './components/Tasks'
-import TaskItem from './components/TaskItem'
 import Home from './components/Home'
 import Admin from './components/Admin'
-import Register from './components/Register'
-import Login from './components/Login'
 import NotFound from './components/NotFound'
-import ButtonOrange from './components/ButtonOrange'
 
-Vue.component('button-orange', ButtonOrange)
+import Register from './components/Auth/Register'
+import Login from './components/Auth/Login'
+import Dashboard from './components/User/Dashboard'
+import UserItem from './components/User/UserItem'
+import Company from './components/Company/Company'
+import Projects from './components/Project/Projects'
+import ProjectItem from './components/Project/ProjectItem'
+import Tasks from './components/Task/Tasks'
+import TaskItem from './components/Task/TaskItem'
+import ButtonOrange from './components/Common/ButtonOrange'
+import AlertBox from './components/Common/AlertBox'
+
+
+Vue.component('button-orange', ButtonOrange);
+Vue.component('alert-box', AlertBox)
 
 const router = new VueRouter({
   mode: 'history',
@@ -113,9 +118,9 @@ const router = new VueRouter({
       name: '404',
       component: NotFound
     },  
-    // { path: '*',
-    //   redirect: '/404'
-    // }, 
+    { path: '*',
+      redirect: '/404'
+    }, 
   ],
 });
 
@@ -125,7 +130,8 @@ Vue.use(require('@websanova/vue-auth'), {
    http: require('@websanova/vue-auth/drivers/http/axios.1.x.js'),
    router: require('@websanova/vue-auth/drivers/router/vue-router.2.x.js'),
 });
-App.router = Vue.router
+App.store = store;
+App.router = Vue.router;
 new Vue(App).$mount('#app');
 
 // const app = new Vue({

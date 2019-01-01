@@ -7,6 +7,10 @@
 						<div>
 							<span class="task_title">Статус:</span>
 							<span class="task_value">{{task.opened | status}}</span>
+							<span class="task_value">({{task.done | doneFilter}})</span>
+						</div>
+						<div v-if="task.canceled"> 
+							<span class="task_title">Отменено</span>
 						</div>
 						<div>
 							<span class="task_title">Создана:</span>
@@ -16,17 +20,11 @@
 							<span class="task_title">Крайний срок:</span>
 							<span class="task_value">{{task.deadline | date}}</span>
 						</div>
-						<div>
-							<span class="task_title">Срочное:</span>
-							<span class="task_value">{{task.immediate| boolToString}}</span>
+						<div v-if="task.immediate">
+							<span class="task_title">Срочное</span>
 						</div>
-						<div>
-							<span class="task_title">В черновике:</span>
-							<span class="task_value">{{task.drafts| boolToString}}</span>
-						</div>
-						<div>
-							<span class="task_title">Отменено:</span>
-							<span class="task_value">{{task.canceled| boolToString}}</span>
+						<div v-if="task.drafts"> 
+							<span class="task_title">В черновике</span>
 						</div>
 						<div>
 							<span class="task_title">Автор:</span>
@@ -44,6 +42,8 @@
 						</div>
 					</div>
 					<div class="action__btns">
+						<button-orange v-if="task.opened && task.done" btnClass="btn_orange task_close" @click.native="closeTask" btnTitle="Закрыть"></button-orange>
+						<button-orange v-if="task.opened" btnClass="btn_orange task_done" @click.native="doneTask" btnTitle="На проверку/На доработку"></button-orange>
 						<button-orange btnClass="btn_orange task_edit" @click.native="isHidden = true" btnTitle="Править"></button-orange>
 						<button-orange btnClass="btn_orange task_delete" @click.native="deleteTask" btnTitle="Удалить"></button-orange>
 					</div>
@@ -127,6 +127,33 @@
 	  	this.getUsers();
 	},
   	methods: {
+  		closeTask() {
+  			var app = this;
+  			this.axios.put('tasks/' + this.$route.params.id + '/close', {
+	  			opened: !app.task.opened,
+	  			done: false
+	  		}).then(response => {
+	  			app.edit_task_success = true;
+	  			app.isHidden = false;
+	  			app.task.opened = !app.task.opened
+            }).catch(error => {
+                app.error = true;
+                app.errors = error.data;
+            });  
+  		},
+  		doneTask() {
+  			var app = this;
+  			this.axios.put('tasks/' + this.$route.params.id + '/done', {
+	  			done: !app.task.done
+	  		}).then(response => {
+	  			app.edit_task_success = true;
+	  			app.isHidden = false;
+	  			app.task.done = !app.task.done
+            }).catch(error => {
+                app.error = true;
+                app.errors = error.data;
+            });  
+  		},
   		editTask() {
   			var app = this;
   			this.axios.put('tasks/' + this.$route.params.id, {
@@ -139,7 +166,6 @@
 	  			opened: app.task.opened,
 	  			responsible: app.responsible
 	  		}).then(response => {
-	  			app.task = response.data.data;
 	  			app.edit_task_success = true;
 	  			app.isHidden = false;
 	  			this.getTask();
@@ -192,6 +218,10 @@
   		status(value) {
   			if (!value) return 'Закрыто';
   			return 'Открыто';
+  		},
+  		doneFilter(value) {
+  			if (!value) return 'в работе';
+  			return 'на проверке';
   		},
   		date(value) {
   			if (!value) return;

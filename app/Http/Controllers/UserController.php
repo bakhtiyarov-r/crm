@@ -42,10 +42,11 @@ class UserController extends Controller
         $user = new User($request->all());
         Auth::user()->company->users()->save($user);
         $user->profile->fill($request->all())->save();
+        $data = Auth::user()->company->users->load('profile');
 
         return response([
             'status' => 'success',
-            'data' => $user
+            'data' => $data
            ], 200);
     }
 
@@ -53,9 +54,10 @@ class UserController extends Controller
 	{
         $user->fill($request->all())->save();
 	    $user->profile->fill($request->all())->save();
+        $data = $user->load('profile');
 	    return response([
 	        'status' => 'success',
-	        'data' => $user
+            'data' => $data
 	       ], 200);
 	}
 

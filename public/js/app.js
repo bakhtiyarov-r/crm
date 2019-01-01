@@ -26140,7 +26140,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         removeDocument: function removeDocument() {
             var app = this;
-            console.log(app.remove_files);
             this.axios.put(this.$route.params.id + '/document', {
                 documents: app.remove_files
             }).then(function (response) {

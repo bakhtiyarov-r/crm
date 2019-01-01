@@ -95,7 +95,6 @@
             },
             removeDocument() {
                 var app = this;
-                console.log(app.remove_files)
                 this.axios.put(this.$route.params.id + '/document', {
                     documents: app.remove_files
                 }).then(response => {

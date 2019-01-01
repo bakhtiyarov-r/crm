@@ -154,9 +154,11 @@
         		} else if (count == 'closed') {
         			return !elem.opened;
         		} else if (count == 'opened') {
-        			return elem[count] == true && elem.done == false;
-        		}else {
-        			return elem[count] == true; 
+        			return elem[count] && !elem.done;
+        		} else if (count == 'immediate') {
+        			return elem[count] && elem.opened;
+        		} else {
+        			return elem[count]; 
         		} 
         	}).length
 		}
@@ -191,6 +193,8 @@
             				return elem.done;
             		} else if(app.status_filter == 'canceled') {
             				return elem.canceled;
+            		} else if(app.status_filter == 'immediate') {
+            				return elem.immediate && elem.opened && !elem.canceled;
             		} else {
             			return elem[app.status_filter] && !elem.done && !elem.canceled;
             		}

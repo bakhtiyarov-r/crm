@@ -70,7 +70,7 @@
 							</label>
 							<select v-model="task_author"> 
 								<option value="all">Все</option>
-								<option v-for="author in userList" v-bind:value="author.id">{{ author.name }}&nbsp;{{ author.profile.surname }}</option>
+								<option v-for="author in executorsList" v-bind:value="author.id">{{ author.name }}&nbsp;{{ author.profile.surname }}</option>
 							</select>
 						</div>
 					</div>  	
@@ -115,18 +115,10 @@
 	</div>
 </template>
 <script>
+	import { mapState, mapGetters } from 'vuex';
   export default {
   	data() {
   		return {
-  			tasks: [],
-  			title: 'Новая задача',
-  			description: '',
-  			deadline: '',
-  			immediate: false,
-  			drafts: false,
-            error: false,
-            errors: {},
-            add_task_success: false,
             isHidden: false,
             task_author: this.$auth.user().id,
             task_name_filter: '',
@@ -134,19 +126,9 @@
   		}
   	},
   	mounted() {
-	  	this.getTasks();
+	  	this.$store.dispatch('getTasks');
 	},
   	methods: {
-	  	getTasks() {
-  			var app = this;
-	  		this.axios.get('tasks').then(response => {
-	  			app.tasks = response.data.data;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-                
-            });  
-	  	},
         getCountItems(count) {
         	return this.tasks.filter(elem => {
         		if (!count) {
@@ -164,12 +146,12 @@
 		}
   	},
     computed: {
-    	sort() {
-			var app = this;
-			return this.tasks
-				.sort((a, b) => a.deadline > b.deadline? 1 : -1)
-				.sort((a, b) => a.opened == b.opened? 0 : a.opened? -1 : 1);
-		},
+    	...mapState({
+	    		tasks: state => state.tasks.items,
+	    	}),
+	    	...mapGetters([
+	    		'executorsList', 'sort'
+	    	]),
         taskList() {
         	var app = this;
             var taskName = this.task_name_filter.toLowerCase();
@@ -200,25 +182,6 @@
             		}
             	})
         },
-        userList() {
-        	var app = this;
-        	var pr = app.tasks;
-        	var result = [];
-			
-		    for (var i = 0; i < pr.length; i++) {
-		    	var str = pr[i].executors; 
-
-		    	nextInput:
-	    		for (var k = 0; k < str.length; k++) {
-	    			var exec = str[k].id;
-	    			for (var j = 0; j < result.length; j++) {
-			        	if (result[j].id == exec) continue nextInput; 
-			    	}
-			    	result.push(str[k]);
-	    		}
-		    }
-			return result;
-        }
     },
   	filters: {
   		status(value) {

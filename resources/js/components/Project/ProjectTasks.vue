@@ -24,7 +24,7 @@
 				</div>  	
 			</div>	
 			<div class="action__btns">
-				<button-orange btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Создать новую задачу"></button-orange>
+				<button-orange v-if="this.$auth.user().role_id >= 2 || this.$auth.user().sudo" btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Создать новую задачу"></button-orange>
 			</div>
 		</section>
 		<section>

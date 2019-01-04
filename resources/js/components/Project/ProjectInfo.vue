@@ -30,8 +30,8 @@
 						</div>
 					</div>
 					<div class="action__btns">
-            <button-orange btnClass="btn_orange task_edit" @click.native="isHidden = true" btnTitle="Править проект"></button-orange>
-            <button-orange btnClass="btn_orange task_delete" @click.native="deleteProject" btnTitle="Удалить проект"></button-orange>
+            <button-orange v-if="this.$auth.user().role_id >= 3 || this.$auth.user().sudo" btnClass="btn_orange task_edit" @click.native="isHidden = true" btnTitle="Править проект"></button-orange>
+            <button-orange v-if="this.$auth.user().role_id >= 3 || this.$auth.user().sudo" btnClass="btn_orange task_delete" @click.native="deleteProject" btnTitle="Удалить проект"></button-orange>
 					</div>
 				</div>
 			</div>

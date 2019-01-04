@@ -44,66 +44,48 @@
     </div>
 </template>
 <script> 
+    import { mapState } from 'vuex';
     export default {
         data(){
             return {
-            	documents: [],
                 uploaded_doc: '',
                 isHidden: false,
                 remove_files: [],
-                add_document_success: false,
-                error: false,
-                errors: {}
             };
         },
         mounted() {
-		  	this.getTask();
 		},
+        computed: {
+            ...mapState({
+                documents: state => state.tasks.documents,
+                error: state => state.tasks.error,
+                errors: state => state.tasks.errors,
+                add_document_success: state => state.tasks.add_document_success,
+            }),
+        },
         methods: {
-        	getTask() {
-	  			var app = this;
-		  		this.axios.get('tasks/' + this.$route.params.id).then(response => {
-		  			app.documents = response.data.data.documents;
-	            }).catch(error => {
-	                app.error = true;
-	                app.errors = error.data;
-	            });  
-		  	},
-            addDocument() {
-                var app = this;
-                var formData = new FormData();
-                for( var i = 0; i < this.uploaded_doc.length; i++ ){
-				  let file = this.uploaded_doc[i];
-				  formData.append('files[' + i + ']', file);
-				}
-
-                this.axios.post(this.$route.params.id + '/document', formData, {
-                    headers: {
-                      'Content-Type': 'multipart/form-data'
-                    }
-                }).then(response => {
-                	this.getTask();
-                    app.add_document_success = true;
-                    app.success = true
-                }).catch(error => {
-                    app.error = true;
-                    app.errors = error.data;
-                });    
-            },
             handleFilesUpload() {
                 this.uploaded_doc = this.$refs.document.files;
             },
-            removeDocument() {
-                var app = this;
-                this.axios.put(this.$route.params.id + '/document', {
-                    documents: app.remove_files
-                }).then(response => {
-                    app.getTask();
-                    app.remove_files = [];
-                }).catch(error => {
-                    app.error = true;
-                    app.errors = error.data;
+            addDocument() {
+                var formData = new FormData();
+                for( var i = 0; i < this.uploaded_doc.length; i++ ){
+                  let file = this.uploaded_doc[i];
+                  formData.append('files[' + i + ']', file);
+                }
+                this.$store.dispatch('addDocument', {
+                    formData: formData,
+                    task_id: this.$route.params.id
                 });
+            },
+            removeDocument() {
+                this.$store.dispatch('removeDocument', {
+                    data: {
+                        documents: this.remove_files,
+                    },
+                    task_id: this.$route.params.id
+                }) 
+                this.remove_files = []; 
             },
             getExtention(value) {
                 let fileExt = value.split('.').pop().toLowerCase();

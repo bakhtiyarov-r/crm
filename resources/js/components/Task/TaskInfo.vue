@@ -110,104 +110,77 @@
 	</div>
 </template>
 <script>
+	import { mapState } from 'vuex';
   export default {
   	data() {
   		return {
-  			task: [],
-  			users: [],
-        	responsible: [],
   			isHidden: false,
-  			edit_task_success: false,
-            error: false,
-            errors: {}
   		}
   	},
   	mounted() {
-	  	this.getTask();
-	  	this.getUsers();
+	},
+	computed: {
+		...mapState({
+    		task: state => state.tasks.item,
+    		error: state => state.tasks.error,
+	        errors: state => state.tasks.errors,
+	        edit_task_success: state => state.tasks.edit_success,
+    		users: state => state.users.items,
+    	}),
+    	responsible: {
+	        get () {
+	          return this.$store.state.tasks.executors
+	        },
+	        set (value) {
+	          this.$store.commit('addExecutors', value)
+	        }
+	      },
 	},
   	methods: {
   		closeTask() {
-  			var app = this;
-  			this.axios.put('tasks/' + this.$route.params.id + '/close', {
-	  			opened: !app.task.opened,
-	  			done: false
-	  		}).then(response => {
-	  			app.edit_task_success = true;
-	  			app.isHidden = false;
-	  			app.task.opened = !app.task.opened
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+  			this.$store.dispatch('closeTask', {
+		            data: {
+						opened: !this.task.opened,
+	  					done: false
+		            },
+		            task_id: this.$route.params.id,
+	        	},
+	        );
   		},
   		doneTask() {
-  			var app = this;
-  			this.axios.put('tasks/' + this.$route.params.id + '/done', {
-	  			done: !app.task.done
-	  		}).then(response => {
-	  			app.edit_task_success = true;
-	  			app.isHidden = false;
-	  			app.task.done = !app.task.done
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+  			this.$store.dispatch('doneTask', {
+		            data: {
+						done: !this.task.done
+		            },
+		            task_id: this.$route.params.id,
+	        	},
+	        ); 
   		},
   		editTask() {
-  			var app = this;
-  			this.axios.put('tasks/' + this.$route.params.id, {
-	  			title: app.task.title,
-	  			description: app.task.description,
-	  			deadline: app.task.deadline,
-	  			immediate: app.task.immediate,
-	  			drafts: app.task.drafts,
-	  			canceled: app.task.canceled,
-	  			opened: app.task.opened,
-	  			responsible: app.responsible
-	  		}).then(response => {
-	  			app.edit_task_success = true;
-	  			app.isHidden = false;
-	  			this.getTask();
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+  			this.$store.dispatch('editTask', {
+		            data: {
+						title: this.task.title,
+			  			description: this.task.description,
+			  			deadline: this.task.deadline,
+			  			immediate: this.task.immediate,
+			  			drafts: this.task.drafts,
+			  			canceled: this.task.canceled,
+			  			opened: this.task.opened,
+			  			responsible: this.responsible
+		            },
+		            task_id: this.$route.params.id,
+	        	},
+	        );
+        	this.responsible;
   		},
-	  	getTask() {
-  			var app = this;
-	  		this.axios.get('tasks/' + this.$route.params.id).then(response => {
-	  			app.task = response.data.data;
-	  			let res = response.data.data.executors;
-	            res.forEach(function(item, i, res){
-	              for( let key in item ) {
-	                if (key === 'id') {
-	                  app.responsible.push(item[key]);
-	                }
-	              }
-	            })
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
-	  	},
-	  	getUsers() {
-	        var app = this;
-	        this.axios.get('users').then(response => {
-	            app.users = response.data.data;
-	            }).catch(error => {
-	                app.error = true;
-	                app.errors = error.data;
-	            });  
-	    },
 	  	deleteTask() {
-  			var app = this;
-	  		this.axios.delete('tasks/' + this.$route.params.id).then(response => {
-	  			window.location = response.data.redirect;
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
+	  		var confirmDelete = confirm("Удалить задачу и связанные документы?");
+	        if (confirmDelete) {
+	          this.$store.dispatch('deleteTask', {
+	              task_id: this.$route.params.id
+	            }
+	          );
+	        }
 	  	}
   	},
   	filters: {

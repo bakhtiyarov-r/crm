@@ -1,90 +1,182 @@
 import axios from 'axios';
 
 const state = {
-  tasks: null,
-  task: null,
-  responsible: [],
+  items: [],
+  item: {},
+  documents: [],
+  executors: [],
+  add_success: false,
+  edit_success: false,
+  add_document_success: false,
   error: false,
   errors: {},
 };
 
 const getters = {
-  
+  sort: state => {
+    return state.items
+      .sort((a, b) => a.deadline > b.deadline? 1 : -1)
+      .sort((a, b) => a.opened == b.opened? 0 : a.opened? -1 : 1);
+  },
+
+  executorsList: state => {
+    var pr = state.items;
+          var result = [];
+      
+        for (var i = 0; i < pr.length; i++) {
+          var str = pr[i].executors; 
+
+          nextInput:
+          for (var k = 0; k < str.length; k++) {
+            var exec = str[k].id;
+            for (var j = 0; j < result.length; j++) {
+                if (result[j].id == exec) continue nextInput; 
+            }
+            result.push(str[k]);
+          }
+        }
+      return result;
+  }
 };
 
 const mutations = {
-  SET_TASKS: (state, payload) => {
-    state.tasks = payload;
+  setTasks: (state, payload) => {
+    state.items = payload;
   },
 
-  SET_PROJECT: (state, payload) => {
-    state.project = payload;
+  setTask: (state, payload) => {
+    state.item = payload;
   },
 
-  SET_RESPONSIBLE: (state, payload) => {
+  setDocuments: (state, payload) => {
+    state.documents = payload;
+  },
+
+  setTaskClosed: (state, payload) => {
+    state.item.opened = payload;
+  },
+
+  setTaskDone: (state, payload) => {
+    state.item.done = payload;
+  },
+
+  setExecutors: (state, payload) => {
     let res = payload.executors;
     res.forEach(function(item, i, res){
       for( let key in item ) {
         if (key === 'id') {
-          state.responsible.push(item[key]);
+          state.executors.push(item[key]);
         }
       }
     })
   },
 
-  ADD_PROJECT: (state, payload) => {
-    state.projects.push(payload);
+  addExecutors: (state, payload) => {
+    state.executors = payload;
   },
 
-  REMOVE_PROJECT: (state, payload) => {
-    state.projects.push(payload);
+  setAddDocumentSuccess: (state, payload) => {
+    state.add_document_success = payload;
   },
 
-  SET_ERROR: (state, payload) => {
+  setEditSuccess: (state, payload) => {
+    state.edit_success = payload;
+  },
+  
+  setError: (state, payload) => {
     state.error = payload;
   },
 
-  SET_ERRORS: (state, payload) => {
+  setErrors: (state, payload) => {
     state.errors = payload;
   }
 };
 
 const actions = {
-  GET_TASKS({commit}) {
+  getTasks({commit}) {
     axios.get('tasks').then(response => {
-      commit('SET_TASKS', response.data.data);
+      commit('setTasks', response.data.data);
     }).catch(error => {
-      commit('SET_ERROR', true);
-      commit('SET_ERRORS', error.data);
+      commit('setError', true);
+      commit('setErrors', error.data);
     });
   },
 
-  GET_PROJECT({commit}, value)  {
-    axios.get('projects/' + value).then(response => {
-      commit('SET_PROJECT', response.data.data);
-      commit('SET_RESPONSIBLE', response.data.data)
+  getTask({commit}, value)  {
+    axios.get('tasks/' + value).then(response => {
+      commit('setTask', response.data.data);
+      commit('setDocuments', response.data.data.documents)
+      commit('setExecutors', response.data.data)
     }).catch(error => {
-      commit('SET_ERROR', true);
-      commit('SET_ERRORS', error.data);
+      commit('setError', true);
+      commit('setErrors', error.data);
       // if (error.response.status === 403) {
       //  this.$router.push({name: '404'});
       // }
     });
   },
 
-  SAVE_PROJECT: async (context, payload) => {
-    let {data} = await axios.post('http://yourwebsite.com/api/todo');
-    context.commit('ADD_PROJECT', payload);
+  closeTask({commit}, payload) {
+    axios.put('tasks/' + payload.task_id + '/close', payload.data).then(response => {
+      commit('setTaskClosed', payload.data.opened);
+      commit('setEditSuccess', true);
+    }).catch(error => {
+      commit('setError', true);
+      commit('setErrors', error.data);
+    });
   },
 
-  EDIT_PROJECT: async (context, payload) => {
-    let {data} = await axios.post('http://yourwebsite.com/api/todo');
-    context.commit('SET_PROJECT', payload);
+  doneTask({commit}, payload) {
+    axios.put('tasks/' + payload.task_id + '/done', payload.data).then(response => {
+      commit('setTaskDone', payload.data.done);
+      commit('setEditSuccess', true);
+    }).catch(error => {
+      commit('setError', true);
+      commit('setErrors', error.data);
+    });
   },
 
-  DELETE_PROJECT: async (context, payload) => {
-    let {data} = await axios.post('http://yourwebsite.com/api/todo');
-    context.commit('REMOVE_PROJECT', payload);
+  editTask({commit}, payload) {
+    axios.put('tasks/' + payload.task_id, payload.data).then(response => {
+      commit('setTask', response.data.data);
+      commit('setEditSuccess', true);
+    }).catch(error => {
+      commit('setError', true);
+      commit('setErrors', error.data);
+    });
+  },
+
+  deleteTask({commit}, payload) {
+    axios.delete('tasks/' + payload.task_id).then(response => {
+      window.location = response.data.redirect;
+    }).catch(error => {
+      commit('setError', true);
+      commit('setErrors', error.data);
+    });
+  },
+
+  addDocument({commit}, payload) {
+    axios.post(payload.task_id + '/document', payload.formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => {
+        commit('setDocuments', response.data.data.documents);
+        commit('setAddDocumentSuccess', true);
+      }).catch(error => {
+        commit('setError', true);
+        commit('setErrors', error.data);
+      });    
+  },
+
+  removeDocument({commit}, payload) {
+    axios.put(payload.task_id + '/document', payload.data
+    ).then(response => {
+        commit('setDocuments', response.data.data.documents);
+    }).catch(error => {
+        commit('setError', true);
+        commit('setErrors', error.data);
+    });
   },
 };
 

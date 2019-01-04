@@ -97,7 +97,7 @@ class TaskController extends Controller
         
     }
 
-    public function doneTask(UpdateTaskRequest $request, Task $task)
+    public function doneTask(Request $request, Task $task)
     {
         $task->fill($request->all())->save();
         $user = User::find($task->user_id);
@@ -141,8 +141,11 @@ class TaskController extends Controller
         $users = User::find($resp);
         Notification::send($users, new TaskEdited($task));
 
+        $data = $task->load(['user.profile', 'executors.profile', 'documents']);
+
         return response([
-            'status' => 'success'
+            'status' => 'success',
+            'data' => $data
         ]);
     }
 

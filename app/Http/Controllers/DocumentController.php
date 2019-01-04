@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Task;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateTaskRequest;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
 
-    public function store(Request $request, Task $task){
+    public function store(UpdateTaskRequest $request, Task $task){
 
         // $project = $task->project_id;
         // $company = $task->company_id;
@@ -28,8 +29,11 @@ class DocumentController extends Controller
 			]);
         }
 
+        $documents = $task->load('documents');
+
         return response([
             'status' => 'success',
+            'data' => $documents
             // 'data' => $path
         ]);
 
@@ -41,7 +45,7 @@ class DocumentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Task $task)
+    public function destroy(UpdateTaskRequest $request, Task $task)
     {
         $documents = $request->documents;
         $list = array();
@@ -56,9 +60,11 @@ class DocumentController extends Controller
 
         Storage::delete($list);
 
+        $documents = $task->load('documents');
 
         return response([
-            'status' => 'success'
+            'status' => 'success',
+            'data' => $documents
         ]);
     }
 }

@@ -35,17 +35,12 @@
 <script>
   import TaskInfo from './TaskInfo'
   import TaskDocuments from './TaskDocuments'
+  import { mapState } from 'vuex';
   export default {
   	data() {
   		return {
-  			task: [],
-  			users: [],
-        	responsible: [],
   			isHidden: false,
   			currentTab: 'task-info',
-  			edit_task_success: false,
-            error: false,
-            errors: {}
   		}
   	},
   	components: {
@@ -53,31 +48,19 @@
 	    'task-documents': TaskDocuments
 	},
   	mounted() {
-	  	this.getTask();
+	  	this.$store.dispatch('getTask', this.$route.params.id);
+	  	this.$store.dispatch('getUsers');
 	},
 	computed: {
 	    currentTabComponent () {
 	      return this.currentTab
-	    }
+	    },
+	    ...mapState({
+    		task: state => state.tasks.item,
+    		users: state => state.users.items,
+    	}),
 	},
   	methods: {
-	  	getTask() {
-  			var app = this;
-	  		this.axios.get('tasks/' + this.$route.params.id).then(response => {
-	  			app.task = response.data.data;
-	  			let res = response.data.data.executors;
-	            res.forEach(function(item, i, res){
-	              for( let key in item ) {
-	                if (key === 'id') {
-	                  app.responsible.push(item[key]);
-	                }
-	              }
-	            })
-            }).catch(error => {
-                app.error = true;
-                app.errors = error.data;
-            });  
-	  	},
 	  	getCountItems(count) {
 	  		if (this.task[count]) {
 	  			return this.task[count].length;

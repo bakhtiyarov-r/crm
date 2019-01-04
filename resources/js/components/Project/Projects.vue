@@ -15,7 +15,7 @@
 						
 					</div>
 					<div class="col-md-3 col-lg-2">
-						<button-orange btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Создать новый проект"></button-orange>
+						<button-orange v-if="this.$auth.user().role_id >= 3 || this.$auth.user().sudo" btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Создать новый проект"></button-orange>
 					</div>
 				</div>	
 			</div>		

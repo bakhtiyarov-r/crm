@@ -15,6 +15,7 @@
 						<div class="status">
 							<span class="status_item">Общие сведения</span>
 							<a href="#users" v-on:click="currentTab = 'company-users'" v-bind:class="['status_item', { active: currentTab === 'company-users' }]">Люди</a>
+							<a href="#departments" v-on:click="currentTab = 'company-departments'" v-bind:class="['status_item', { active: currentTab === 'company-departments' }]">Отделы</a>
 							<span class="status_item">Документы <span class="status_count" >0</span></span>
 						</div>
 					</div>
@@ -31,6 +32,7 @@
 </template>
 <script>
 	import CompanyUsers from './CompanyUsers'
+	import CompanyDepartments from './CompanyDepartments'
   export default {
   	data() {
   		return {
@@ -40,7 +42,8 @@
   		}
   	},
   	components: {
-	    'company-users': CompanyUsers
+	    'company-users': CompanyUsers,
+	    'company-departments': CompanyDepartments,
 	},
     computed: {
     	currentTabComponent () {

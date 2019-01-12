@@ -9,6 +9,8 @@ use App\Project;
 use App\Policies\ProjectPolicy;
 use App\Task;
 use App\Policies\TaskPolicy;
+use App\Department;
+use App\Policies\DepartmentPolicy;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -24,7 +26,8 @@ class AuthServiceProvider extends ServiceProvider
         Company::class => CompanyPolicy::class,
         Project::class => ProjectPolicy::class,
         Task::class => TaskPolicy::class,
-        User::class => UserPolicy::class
+        User::class => UserPolicy::class,
+        Department::class => DepartmentPolicy::class
     ];
 
     /**

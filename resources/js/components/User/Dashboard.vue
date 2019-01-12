@@ -106,6 +106,7 @@
     </div>
 </template>
 <script> 
+    import { mapState } from 'vuex';
     export default {
         data(){
             return {
@@ -119,47 +120,48 @@
                 avatar: this.$auth.user().profile.avatar,
                 uploadedAvatar: '',
                 isHidden: false,
-                edit_success: false,
-                error: false,
-                errors: {},
-                success: false
             };
+        },
+        computed: {
+            ...mapState({
+                // avatar: state => state.users.avatar,
+                error: state => state.users.error,
+                errors: state => state.users.errors,
+                success: state => state.users.success,
+            }),
+            // avatar: {
+            //     get () {
+            //         if (!this.$store.state.users.avatar) {
+            //             return this.$auth.user().profile.avatar;
+            //         }
+            //         return this.$store.state.users.avatar;
+            //     }
+            //   },
         },
         methods: {
             updateAvatar() {
                 var app = this;
                 var formData = new FormData();
                 formData.append('avatar', app.uploadedAvatar);
-                this.axios.post('profile/avatar', formData, {
-                    headers: {
-                      'Content-Type': 'multipart/form-data'
-                    }
-                }).then(response => {
-                    app.avatar = response.data.data;
-                    app.success = true
-                }).catch(error => {
-                    app.error = true;
-                    app.errors = resp.response.data.errors;
-                });    
+
+                this.$store.dispatch('updateAvatar', {
+                    formData: formData,
+                }); 
             },
             handleFilesUpload() {
                 this.uploadedAvatar = this.$refs.avatar.files[0];
             },
             update() {
-                var app = this
-                this.axios.put('profile/edit', {
-                    name: app.name,
-                    surname: app.surname,
-                    email: app.email,
-                    phone: app.phone,
-                    position: app.position,
-                    birthday: app.birthday
-                }).then(response => {
-                    app.success = true
-                }).catch(error => {
-                    app.error = true;
-                    app.errors = resp.response.data.errors;
-                });                
+                this.$store.dispatch('editProfile', {
+                    data: {
+                        name: this.name,
+                        surname: this.surname,
+                        email: this.email,
+                        phone: this.phone,
+                        birthday: this.birthday,
+                        position: this.position,
+                    }
+                });              
             }
         },
         filters: {

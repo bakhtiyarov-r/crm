@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->boolean('sudo')->default(false);
             $table->unsignedInteger('role_id')->nullable();
+            $table->unsignedInteger('department_id')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

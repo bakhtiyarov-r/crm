@@ -53,6 +53,8 @@ Route::group(['middleware' => 'jwt.auth'], function() {
 	Route::post('{task}/document', 'DocumentController@store');
 	Route::put('{task}/document', 'DocumentController@destroy');
 
+	Route::resource('departments', DepartmentController::class);
+
 });
 
 Route::group(['middleware' => 'jwt.refresh'], function() {

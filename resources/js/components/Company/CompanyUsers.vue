@@ -58,7 +58,7 @@
 			<div class="title">
 				<h2 >Добавить  сотрудника</h2>
 			</div>
-			<div class="alert alert-danger" v-if="error && !add_user_success">
+			<div class="alert alert-danger" v-if="error && !add_success">
                 <p>При добавлении произошла ошибка</p>
             </div>
             <div class="alert alert-success" v-if="add_success">
@@ -90,15 +90,13 @@
                     <input type="text" id="phone" class="form-control" v-model="phone">
                     
                 </div>
-                <div class="form-group" v-bind:class="{ 'has-error': error && errors.email }">
+                <div class="form-group">
                         <label for="email">E-mail</label>
                         <input type="email" id="email" class="form-control" placeholder="user@example.com" v-model="email" required>
-                        <span class="help-block" v-if="error && errors.email">{{ errors.email }}</span>
                     </div>
-                    <div class="form-group" v-bind:class="{ 'has-error': error && errors.password }">
+                    <div class="form-group">
                         <label for="password">Пароль</label>
                         <input type="password" id="password" class="form-control" v-model="password" required>
-                        <span class="help-block" v-if="error && errors.password">{{ errors.password }}</span>
                     </div>
                 <button type="submit" class="btn btn-default" >Добавить</button>
             </form>

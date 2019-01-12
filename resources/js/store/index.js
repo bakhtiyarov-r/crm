@@ -5,6 +5,7 @@ import VueAxios from 'vue-axios';
 import projects from './modules/projects';
 import tasks from './modules/tasks';
 import users from './modules/users';
+import departments from './modules/departments';
 
 Vue.use(Vuex);
 Vue.use(VueAxios, axios);
@@ -16,5 +17,6 @@ export const store = new Vuex.Store({
     projects,
     tasks,
     users,
+    departments,
   },
 });

@@ -3,6 +3,7 @@ import axios from 'axios';
 const state = {
   items: [],
   item: {profile: {}},
+  avatar: '',
   error: false,
   errors: {},
   success: false,
@@ -20,6 +21,10 @@ const mutations = {
 
   setUser: (state, payload) => {
     state.item = payload;
+  },
+
+  setAvatar: (state, payload) => {
+    state.avatar = payload;
   },
 
   setAddSuccess: (state, payload) => {
@@ -79,6 +84,16 @@ const actions = {
     }); 
   },
 
+  editProfile({commit}, payload) {
+    axios.put('profile/edit', payload.data
+    ).then(response => {
+      commit('setSuccess', true);
+    }).catch(error => {
+        commit('setError', true);
+        commit('setErrors', error.data);
+    }); 
+  },
+
   deleteUser({commit}, payload) {
     axios.delete('users/' + payload.user_id).then(response => {
         window.location = response.data.redirect;
@@ -86,6 +101,19 @@ const actions = {
         commit('setError', true);
         commit('setErrors', error.data);
     });  
+  },
+
+  updateAvatar({commit}, payload) {
+    axios.post('profile/avatar', payload.formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => {
+        commit('setAvatar', response.data.data);
+      }).catch(error => {
+        commit('setError', true);
+        commit('setErrors', error.data);
+      });    
   },
   
 };

@@ -21,7 +21,7 @@ class UserController extends Controller
 
 	public function index()
     {
-        $users = Auth::user()->company->users->load('profile');
+        $users = Auth::user()->company->users->load(['profile', 'department']);
         return response([
             'status' => 'success',
             'data' => $users
@@ -30,7 +30,7 @@ class UserController extends Controller
 
     public function show(ViewUserRequest $request, User $user)
     {
-        $user = $user->load('profile');
+        $user = $user->load(['profile', 'department']);
         return response([
             'status' => 'success',
             'data' => $user
@@ -42,7 +42,7 @@ class UserController extends Controller
         $user = new User($request->all());
         Auth::user()->company->users()->save($user);
         $user->profile->fill($request->all())->save();
-        $data = Auth::user()->company->users->load('profile');
+        $data = Auth::user()->company->users->load(['profile', 'department']);
 
         return response([
             'status' => 'success',
@@ -54,7 +54,7 @@ class UserController extends Controller
 	{
         $user->fill($request->all())->save();
 	    $user->profile->fill($request->all())->save();
-        $data = $user->load('profile');
+        $data = $user->load(['profile', 'department']);
 	    return response([
 	        'status' => 'success',
             'data' => $data

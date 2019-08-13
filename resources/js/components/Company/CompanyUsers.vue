@@ -16,7 +16,7 @@
 						<div class="filter_name" >
 							<select v-model="user_position_filter">
 								<option value="all">Все</option>
-								<option v-for="user in users" v-bind:value="user.id">{{ user.profile.position }}</option>
+								<option v-for="user in users" v-bind:value="user.id">{{ user.department.title }}</option>
 							</select>
 							<!-- <a href="#" v-for="author in tasks.tasks">{{ author.user.name }}&nbsp;{{ author.user.profile.surname }}&nbsp;&nbsp;</a> -->
 						</div>
@@ -24,7 +24,7 @@
 				</div>  	
 			</div>
 			<div class="action__btns">
-	            <button-orange btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Добавить"></button-orange>
+	            <button-orange v-if="this.$auth.user().role_id == 4 || this.$auth.user().sudo" btnClass="btn_orange task_add" @click.native="isHidden = true" btnTitle="Добавить"></button-orange>
 			</div>
 		</section>
 		<section>

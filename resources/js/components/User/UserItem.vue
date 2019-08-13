@@ -22,6 +22,10 @@
                         <img  :src="'/storage/avatars/' + user.profile.avatar" style="width: 100%;">
                     </div>
                     <div class="col-md-8 col-lg-8">
+                        <div v-if="user.department">
+                            <span class="task_title">Отдел:</span>
+                            <span class="task_value">{{user.department.title}}</span>
+                        </div>
                         <div>
                             <span class="task_title">Должность:</span>
                             <span class="task_value">{{user.profile.position}}</span>
@@ -75,9 +79,15 @@
                     <input type="text" id="position" class="form-control" v-model="user.profile.position">
                     <span class="help-block" v-if="error && errors.user.profile.position">{{ errors.user.profile.position }}</span>
                 </div>
-                <div class="form-group">
+                <div v-if="this.$auth.user().role_id == 4 || this.$auth.user().sudo" class="form-group">
+                    <label for="position">Добавить в отдел: </label>
+                    <select v-model="user.department_id"> 
+                        <option v-for="department in departments" v-bind:value="department.id">{{ department.title }}</option>
+                    </select>
+                </div>
+                <div v-if="this.$auth.user().role_id == 4 || this.$auth.user().sudo" class="form-group">
                     Выбрать роль:
-                    <div v-if="this.$auth.user().sudo" class="form-row" v-bind:class="{ 'has-error': error && errors.user.name }">
+                    <div class="form-row" v-bind:class="{ 'has-error': error && errors.user.name }">
                         
                         <div  class="form-group col-sm-6">
                             <div class="form-sub-group">
@@ -122,9 +132,11 @@
         },
         mounted() {
             this.$store.dispatch('getUser', this.$route.params.id);
+            this.$store.dispatch('getDepartments');
         },
         computed: {
             ...mapState({
+                departments: state => state.departments.items,
                 user: state => state.users.item,
                 error: state => state.users.error,
                 errors: state => state.users.errors,
@@ -138,6 +150,7 @@
                         name: this.user.name,
                         surname: this.user.profile.surname,
                         position: this.user.profile.position,
+                        department_id: this.user.department_id,
                         role_id: this.user.role_id,
                         sudo: this.user.sudo
                     },

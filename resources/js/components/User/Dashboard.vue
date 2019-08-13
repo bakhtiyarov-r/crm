@@ -78,11 +78,6 @@
                         <span class="help-block" v-if="error && errors.surname">{{ errors.surname }}</span>
                     </div>
                 </div>
-                <div class="form-group input-group-sm" v-bind:class="{ 'has-error': error && errors.position }">
-                    <label for="position">Должность</label>
-                    <input type="text" id="position" class="form-control" v-model="position">
-                    <span class="help-block" v-if="error && errors.position">{{ errors.position }}</span>
-                </div>
                 <div class="form-group input-group-sm" v-bind:class="{ 'has-error': error && errors.birthday }">
                     <label for="birthday">День рождения</label>
                     <input type="date" id="birthday" class="form-control" v-model="birthday">
@@ -140,13 +135,10 @@
         },
         methods: {
             updateAvatar() {
-                var app = this;
                 var formData = new FormData();
-                formData.append('avatar', app.uploadedAvatar);
+                formData.append('avatar', this.uploadedAvatar);
 
-                this.$store.dispatch('updateAvatar', {
-                    formData: formData,
-                }); 
+                this.$store.dispatch('updateAvatar', formData)
             },
             handleFilesUpload() {
                 this.uploadedAvatar = this.$refs.avatar.files[0];
@@ -159,7 +151,6 @@
                         email: this.email,
                         phone: this.phone,
                         birthday: this.birthday,
-                        position: this.position,
                     }
                 });              
             }

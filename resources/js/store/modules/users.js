@@ -104,7 +104,7 @@ const actions = {
   },
 
   updateAvatar({commit}, payload) {
-    axios.post('profile/avatar', payload.formData, {
+    axios.post('profile/avatar', payload, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

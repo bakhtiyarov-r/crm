@@ -33,6 +33,9 @@
 							          
 						</div>     	
 						<div class="filter_name" >
+							<label for="" >
+								Автор:
+							</label>
 							<select v-model="project_author"> 
 								<option value="all">Все</option>
 								<option v-for="author in userList" v-bind:value="author.user.name + ' ' + author.user.profile.surname">{{ author.user.name }}&nbsp;{{ author.user.profile.surname }}</option>
